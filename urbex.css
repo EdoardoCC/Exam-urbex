@@ -1,0 +1,29 @@
+#joueur1{
+    background-color: rgb(192, 241, 160);
+    padding: 5%;
+    height: 400px;
+    width: 500px;
+    margin-left: 35%;
+
+}
+#joueur2{
+    background-color: rgb(124, 175, 90);
+    padding: 5%;
+    width: 15%;
+    margin-left: 35%;
+}
+#joueur3{
+    background-color: rgb(103, 252, 3);
+    padding: 5%;
+    width: 15%;
+    margin-left: 35%;
+
+}
+#joueur4{
+    background-color: rgb(54, 129, 4);
+    padding: 5%;
+    width: 15%;
+    margin-left: 35%;
+
+}
+
