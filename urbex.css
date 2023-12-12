@@ -1,29 +1,46 @@
+#titre{
+    margin-left: 45%;
+}
 #joueur1{
     background-color: rgb(192, 241, 160);
-    padding: 5%;
-    height: 400px;
-    width: 500px;
-    margin-left: 35%;
-
+    height: 80px;
+    width: 180px;
+    margin: 0 10px;
+    
 }
 #joueur2{
     background-color: rgb(124, 175, 90);
-    padding: 5%;
-    width: 15%;
-    margin-left: 35%;
+    height: 80px;
+    width: 180px;
+    margin: 0 10px;
 }
 #joueur3{
     background-color: rgb(103, 252, 3);
-    padding: 5%;
-    width: 15%;
-    margin-left: 35%;
-
+    height: 80px;
+    width: 180px;
+    margin: 0 10px;
 }
 #joueur4{
     background-color: rgb(54, 129, 4);
-    padding: 5%;
-    width: 15%;
-    margin-left: 35%;
+    height: 80px;
+    width: 180px;
+    margin: 0 10px;
+}
+
+#objet{
+    background-color: rgb(40, 35, 206);
+    height: 300px;
+    width: 300px;
+    margin-left: 10%;
+    margin-top: 10%;
 
 }
+
+#neJouePas{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    
+}
+
 
