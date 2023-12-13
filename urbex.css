@@ -9,32 +9,24 @@
     
 }
 #joueur2{
-    background-color: rgb(124, 175, 90);
+    background-color: rgb(192, 241, 160);
     height: 80px;
     width: 180px;
     margin: 0 10px;
 }
 #joueur3{
-    background-color: rgb(103, 252, 3);
+    background-color: rgb(192, 241, 160);
     height: 80px;
     width: 180px;
     margin: 0 10px;
 }
 #joueur4{
-    background-color: rgb(54, 129, 4);
+    background-color: rgb(192, 241, 160);
     height: 80px;
     width: 180px;
     margin: 0 10px;
 }
 
-#objet{
-    background-color: rgb(40, 35, 206);
-    height: 300px;
-    width: 300px;
-    margin-left: 10%;
-    margin-top: 10%;
-
-}
 
 #neJouePas{
     display: flex;
@@ -43,4 +35,57 @@
     
 }
 
+.photoprofil1{
+    width: 50px;
+    height: 50px;
+}
 
+.phototexteprofil{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-items: center;
+    
+}
+
+.textprofil{
+    
+    font-size: 20px;
+}
+
+#objet{
+    background-color: rgb(30, 23, 253);
+    height: 300px;
+    width: 300px;
+    margin-left: 10%;
+    margin-top: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#textobjet{
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+}
+
+#coffreimg{
+    height: 100px;
+    width: 100px;
+}
+
+#coffreposition{
+    display: flex;
+    justify-content: center;
+}
+
+#quadre{
+    height: 200px;
+    width: 200px;
+}
+#quadreposotion{
+    display: flex;
+    justify-content: center;
+}
