@@ -1,0 +1,21 @@
+
+#fondHome{
+    height: 40%;
+    width: 40%;
+    
+}
+
+#positionFond{
+    display: flex;
+    justify-content: center;
+}
+
+.texts{
+    font-size: 40px;
+}
+
+#positionPlay{
+    display: 	flex;
+    justify-content: center;
+    
+}
