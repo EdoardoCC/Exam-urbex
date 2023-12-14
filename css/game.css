@@ -1,29 +1,19 @@
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	height: 100vh;
+}
+
 #titre {
-	margin-left: 45%;
-}
-#joueur1 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
-}
-#joueur2 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
-}
-#joueur3 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
-}
-#joueur4 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
+	/* center the text */
+	text-align: center;
+	margin-top: auto;
 }
 
 #neJouePas {
@@ -32,20 +22,38 @@
 	justify-content: flex-end;
 }
 
-.photoprofil1 {
+.photoprofil {
 	width: 50px;
 	height: 50px;
 }
 
 .phototexteprofil {
+	/* Style */
+	background-color: rgb(192, 241, 160);
+	height: 80px;
+	width: 180px;
+}
+
+/* Rajoute certain style ".playing" n'est pas présent */
+.phototexteprofil:not(.playing) {
+	margin: 0 10px 0 0;
+
+	/* Flex Settings */
 	display: flex;
 	flex-wrap: nowrap;
 	flex-direction: row;
 	align-items: center;
+	justify-content: center;
 }
 
 .textprofil {
+	font-weight: bold;
 	font-size: 20px;
+}
+
+.player-short-data {
+	display: flex;
+	flex-direction: column;
 }
 
 #objet {
@@ -80,7 +88,47 @@
 	height: 200px;
 	width: 200px;
 }
+
 #quadreposotion {
 	display: flex;
 	justify-content: center;
+}
+
+.player {
+	display: flex;
+	align-items: center;
+}
+
+.playing {
+	/* Style */
+	padding: 20px;
+
+	/* Center div */
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	/* Change height */
+	height: 50% !important;
+	width: 40% !important;
+
+	/* flex settings */
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-content: flex-start;
+}
+
+/* fait clignoter la couleur quand en danger */
+.en-danger {
+	animation: color-beat 1000ms ease-in-out infinite;
+}
+
+@keyframes color-beat {
+	0% {
+		background-color: rgb(192, 241, 160);
+	}
+	100% {
+		background-color: rgb(241, 160, 160);
+	}
 }
