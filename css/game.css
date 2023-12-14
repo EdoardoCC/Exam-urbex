@@ -16,7 +16,7 @@ body {
 	margin-top: auto;
 }
 
-#neJouePas {
+#player-contenaire {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
@@ -114,9 +114,16 @@ body {
 	width: 40% !important;
 
 	/* flex settings */
-	flex-direction: column;
 	flex-wrap: wrap;
 	align-content: flex-start;
+	justify-content: space-evenly;
+}
+
+.danger-lvl {
+	font-size: small;
+	font-weight: bold;
+	font-style: italic;
+	color: red;
 }
 
 /* fait clignoter la couleur quand en danger */
