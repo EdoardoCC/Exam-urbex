@@ -1,38 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Exam Noel</title>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Prototype Urbex</title>
 		<link rel="stylesheet" href="../css/game.css" />
 	</head>
 	<body>
-		<h1 id="titre">Urbex</h1>
-		<div id="neJouePas">
-			<div id="joueur1" class="phototexteprofil">
-
-				<img class="photoprofil1" src="../assets/images/User_Icon.png" />
-				<div class="textprofil">joueur 1</div>
-			</div>
-			<div id="joueur2" class="phototexteprofil">
-				<img class="photoprofil1" src="../assets/images/User_Icon.png" />
-				<div class="textprofil">joueur 2</div>
-			</div>
-			<div id="joueur3" class="phototexteprofil">
-				<img class="photoprofil1" src="../assets/images/User_Icon.png" />
-				<div class="textprofil">joueur 3</div>
-			</div>
-			<div id="joueur4" class="phototexteprofil">
-				<img class="photoprofil1" src="../assets/images/User_Icon.png" />
-				<div class="textprofil">joueur 4</div>
-			</div>
-		</div>
-
-		<div id="objet">
-			<div id="textobjet">Objet trouvé :</div>
-
-			<div id="quadreposotion"><img id="quadre" src="../assets/images/quadre.png" /></div>
-			<div id="coffreposition"><img id="coffreimg" src="../assets/images/coffre_PNG.png" /></div>
-
-
-		</div>
+		<header>
+			<h1>Prototype Urbex</h1>
+		</header>
+		<main>
+			<section id="player-list-contanaire">
+				<article id="player1" class="player-contenaire">
+					<img class="avatar" src="../assets/images/User_Icon.png" />
+					<div class="player-info">
+						<span id="player1-name" class="player-name">joueur 1</span>
+						<span id="player1-hp" class="hp">10/10</span>
+						<span id="player1-danger-lvl" class="danger-lvl">niveaux de danger 0</span>
+					</div>
+				</article>
+				<article id="player1" class="player-contenaire">
+					<img class="avatar" src="../assets/images/User_Icon.png" />
+					<div class="player-info">
+						<span id="player1-name" class="player-name">joueur 1</span>
+						<span id="player1-hp" class="hp">10/10</span>
+						<span id="player1-danger-lvl" class="danger-lvl">niveaux de danger 0</span>
+					</div>
+				</article>
+				<article id="player1" class="player-contenaire">
+					<img class="avatar" src="../assets/images/User_Icon.png" />
+					<div class="player-info">
+						<span id="player1-name" class="player-name">joueur 1</span>
+						<span id="player1-hp" class="hp">10/10</span>
+						<span id="player1-danger-lvl" class="danger-lvl">niveaux de danger 0</span>
+					</div>
+				</article>
+				<article id="player1" class="player-contenaire">
+					<img class="avatar" src="../assets/images/User_Icon.png" />
+					<div class="player-info">
+						<span id="player1-name" class="player-name">joueur 1</span>
+						<span id="player1-hp" class="hp">10/10</span>
+						<span id="player1-danger-lvl" class="danger-lvl">niveaux de danger 0</span>
+					</div>
+				</article>
+			</section>
+			<section id="game-info-contanaire">
+				<article id="objet-contenaire">
+					<h2>Objet trouvé :</h2>
+					<img id="quadre" src="../assets/images/quadre.png" />
+					<img id="coffre" src="../assets/images/coffre_PNG.png" />
+				</article>
+				<article id="player-playing">
+					<div id="player-info-contenaire">
+						<div class="user-contenaire">
+							<img class="avatar" src="../assets/images/User_Icon.png" />
+							<span class="player-name">joueur 1</span>
+						</div>
+						<div>
+							<div class="info-contenaire">
+								<span class="hp">10/10</span>
+								<img class="heart" src="../assets/images/heart.svg" alt="heart" />
+							</div>
+							<div class="info-contenaire">
+								<span class="danger-lvl">niveaux de danger 0</span>
+								<img class="warning" src="../assets/images/warning.svg" alt="warning" />
+							</div>
+						</div>
+					</div>
+					<div>
+						<div>
+							<label for="posX">Position X :</label>
+							<input type="number" name="posX" id="posX" min="1" max="52" value="1" />
+						</div>
+						<div>
+							<label for="posY">Position Y :</label>
+							<input type="number" name="posY" id="posY" min="1" max="29" value="1" />
+						</div>
+						<button>definir position</button>
+					</div>
+					<div>
+						<div>
+							<label for="carte">Code sur la carte a utiliser:</label>
+							<input type="text" name="carte" id="carte" maxlength="6" />
+						</div>
+						<button>activer carte</button>
+						<span id="carte résultat"></span>
+					</div>
+				</article>
+				<article id="end-tour"></article>
+			</section>
+		</main>
 	</body>
 </html>

@@ -1,86 +1,172 @@
-#titre {
-	margin-left: 45%;
-}
-#joueur1 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
-}
-#joueur2 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
-}
-#joueur3 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
-}
-#joueur4 {
-	background-color: rgb(192, 241, 160);
-	height: 80px;
-	width: 180px;
-	margin: 0 10px;
+/* ------- Default page layout style ------- */
+
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
 }
 
-#neJouePas {
+html,
+body {
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+/* Make main take all space */
+body {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+}
+
+h1 {
+	/* center the text */
+	text-align: center;
+	margin-top: auto;
+}
+
+/* ------- Player list ------- */
+
+#player-list-contanaire {
+	display: flex;
 	justify-content: flex-end;
 }
 
-.photoprofil1 {
+.player-contenaire {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-left: 10px;
+}
+
+.player-contenaire {
+	/* Style */
+	background-color: rgb(192, 241, 160);
+	height: 80px;
+	width: 180px;
+	min-width: fit-content;
+	padding: 10px;
+
+	/* Flex */
+	display: flex;
+	flex-direction: row;
+}
+
+.avatar {
 	width: 50px;
 	height: 50px;
 }
 
-.phototexteprofil {
-	display: flex;
-	flex-wrap: nowrap;
-	flex-direction: row;
-	align-items: center;
-}
-
-.textprofil {
+.player-name {
+	font-weight: bold;
 	font-size: 20px;
 }
 
-#objet {
-	background-color: rgb(30, 23, 253);
-	height: 300px;
+.player-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.danger-lvl {
+	font-size: small;
+	font-weight: bold;
+	font-style: italic;
+	color: red;
+}
+
+/* ------- Objet info ------- */
+
+#game-info-contanaire {
+	display: flex;
+	height: 90%;
+	align-items: center;
+	justify-content: space-around;
+}
+
+#objet-contenaire {
+	background-color: rgb(110, 105, 250);
+	height: 50%;
 	width: 300px;
-	margin-left: 10%;
-	margin-top: 10%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	align-items: center;
 }
 
-#textobjet {
-	display: flex;
-	justify-content: center;
-	font-size: 30px;
+#objet-contenaire h2 {
 	color: white;
-}
-
-#coffreimg {
-	height: 100px;
-	width: 100px;
-}
-
-#coffreposition {
-	display: flex;
-	justify-content: center;
 }
 
 #quadre {
 	height: 200px;
 	width: 200px;
+	background-color: white;
 }
-#quadreposotion {
+
+#coffre {
+	height: 100px;
+	width: 100px;
+}
+
+/* ------- Playing ------- */
+
+#player-playing {
+  padding: 20px;
+	height: 50%;
+	width: 40%;
+	background-color: rgb(192, 241, 160);
+}
+
+#player-info-contenaire {
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
+}
+
+.user-contenaire,
+.info-contenaire {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.heart,
+.warning {
+	width: 40px;
+	animation: heartbeat 1s infinite;
+}
+
+/* ------- Animation ------- */
+
+@keyframes color-beat {
+	0% {
+		background-color: rgb(192, 241, 160);
+	}
+	100% {
+		background-color: rgb(241, 160, 160);
+	}
+}
+
+@keyframes heartbeat {
+	0% {
+		transform: scale(0.75);
+	}
+	20% {
+		transform: scale(1);
+	}
+	40% {
+		transform: scale(0.75);
+	}
+	60% {
+		transform: scale(1);
+	}
+	80% {
+		transform: scale(0.75);
+	}
+	100% {
+		transform: scale(0.75);
+	}
 }
