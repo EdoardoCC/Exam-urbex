@@ -1,3 +1,12 @@
+function init() {
+	fantome = {
+		posX: 1,
+		posY: 1,
+		attack: 1,
+	}
+	localStorage.setItem('fantome', JSON.stringify(fantome));
+}
+
 function startGame() {
 	const gameInfo = {
 		maxJoueur: 4,
@@ -9,4 +18,3 @@ function startGame() {
 	localStorage.setItem('gameInfo', JSON.stringify(gameInfo));
 }
 
-startGame();

@@ -126,7 +126,13 @@ function fantomeTP() {
 	if (fantome.posY < 0) fantome.posY = 1;
 }
 
+function check() {
+	return localStorage.getItem('gameInfo') !== null;
+}
+
 function init() {
+	// Redirect vers l'accueil si les informations nécessaire pour jouern ne sont pas présente.
+	if (!check()) return (window.location.href = '/');
 	// Déplace le fantome toute les seconde
 	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
