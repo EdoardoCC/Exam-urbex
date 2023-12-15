@@ -18,6 +18,7 @@ const maxX = 52,
 		posY: 16,
 		pv: 10,
 		htmlElement: Joueur1Element,
+		inventaire: [],
 	},
 	joueur2 = {
 		name: 'joueur2',
@@ -25,6 +26,7 @@ const maxX = 52,
 		posY: 15,
 		pv: 10,
 		htmlElement: Joueur2Element,
+		inventaire: [],
 	},
 	joueur3 = {
 		name: 'joueur3',
@@ -32,6 +34,7 @@ const maxX = 52,
 		posY: 14,
 		pv: 10,
 		htmlElement: Joueur3Element,
+		inventaire: [],
 	},
 	joueur4 = {
 		name: 'joueur4',
@@ -39,6 +42,7 @@ const maxX = 52,
 		posY: 13,
 		pv: 10,
 		htmlElement: Joueur4Element,
+		inventaire: [],
 	},
 	listJoueur = [joueur1, joueur2, joueur3, joueur4];
 
@@ -60,7 +64,7 @@ function finTour() {
 }
 
 function dangerLvl(joueur, danger) {
-	joueur.htmlElement.children[1].children[2].textContent = `niveaux de danger ${danger}`;
+	joueur.htmlElement.children[0].children[1].children[2].textContent = `niveaux de danger ${danger}`;
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
