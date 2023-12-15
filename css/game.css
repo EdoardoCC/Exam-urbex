@@ -1,3 +1,5 @@
+/* ------- Default page layout style ------- */
+
 *,
 *::after,
 *::before {
@@ -6,117 +8,67 @@
 
 html,
 body {
-	margin: 0;
 	height: 100vh;
+	margin: 0;
+	padding: 0;
 }
 
-#titre {
+/* Make main take all space */
+body {
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	flex: 1;
+}
+
+h1 {
 	/* center the text */
 	text-align: center;
 	margin-top: auto;
 }
 
-#player-contenaire {
+/* ------- Player list ------- */
+
+#player-list-contanaire {
 	display: flex;
-	flex-direction: row;
 	justify-content: flex-end;
 }
 
-.photoprofil {
-	width: 50px;
-	height: 50px;
+.player-contenaire {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	margin-left: 10px;
 }
 
-.phototexteprofil {
+.player-contenaire {
 	/* Style */
 	background-color: rgb(192, 241, 160);
 	height: 80px;
 	width: 180px;
-}
+	min-width: fit-content;
+	padding: 10px;
 
-/* Rajoute certain style ".playing" n'est pas présent */
-.phototexteprofil:not(.playing) {
-	margin: 0 10px 0 0;
-
-	/* Flex Settings */
+	/* Flex */
 	display: flex;
-	flex-wrap: nowrap;
 	flex-direction: row;
-	align-items: center;
-	justify-content: center;
 }
 
-.textprofil {
+.avatar {
+	width: 50px;
+	height: 50px;
+}
+
+.player-name {
 	font-weight: bold;
 	font-size: 20px;
 }
 
-.player-short-data {
+.player-info {
 	display: flex;
 	flex-direction: column;
-}
-
-#objet {
-	background-color: rgb(30, 23, 253);
-	height: 300px;
-	width: 300px;
-	margin-left: 10%;
-	margin-top: 10%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-
-#textobjet {
-	display: flex;
-	justify-content: center;
-	font-size: 30px;
-	color: white;
-}
-
-#coffreimg {
-	height: 100px;
-	width: 100px;
-}
-
-#coffreposition {
-	display: flex;
-	justify-content: center;
-}
-
-#quadre {
-	height: 200px;
-	width: 200px;
-}
-
-#quadreposotion {
-	display: flex;
-	justify-content: center;
-}
-
-.player {
-	display: flex;
-	align-items: center;
-}
-
-.playing {
-	/* Style */
-	padding: 20px;
-
-	/* Center div */
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-
-	/* Change height */
-	height: 50% !important;
-	width: 40% !important;
-
-	/* flex settings */
-	flex-wrap: wrap;
-	align-content: flex-start;
-	justify-content: space-evenly;
 }
 
 .danger-lvl {
@@ -126,10 +78,68 @@ body {
 	color: red;
 }
 
-/* fait clignoter la couleur quand en danger */
-.en-danger {
-	animation: color-beat 1000ms ease-in-out infinite;
+/* ------- Objet info ------- */
+
+#game-info-contanaire {
+	display: flex;
+	height: 90%;
+	align-items: center;
+	justify-content: space-around;
 }
+
+#objet-contenaire {
+	background-color: rgb(110, 105, 250);
+	height: 50%;
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#objet-contenaire h2 {
+	color: white;
+}
+
+#quadre {
+	height: 200px;
+	width: 200px;
+	background-color: white;
+}
+
+#coffre {
+	height: 100px;
+	width: 100px;
+}
+
+/* ------- Playing ------- */
+
+#player-playing {
+  padding: 20px;
+	height: 50%;
+	width: 40%;
+	background-color: rgb(192, 241, 160);
+}
+
+#player-info-contenaire {
+	display: flex;
+	justify-content: space-between;
+}
+
+.user-contenaire,
+.info-contenaire {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.heart,
+.warning {
+	width: 40px;
+	animation: heartbeat 1s infinite;
+}
+
+/* ------- Animation ------- */
 
 @keyframes color-beat {
 	0% {
@@ -137,5 +147,26 @@ body {
 	}
 	100% {
 		background-color: rgb(241, 160, 160);
+	}
+}
+
+@keyframes heartbeat {
+	0% {
+		transform: scale(0.75);
+	}
+	20% {
+		transform: scale(1);
+	}
+	40% {
+		transform: scale(0.75);
+	}
+	60% {
+		transform: scale(1);
+	}
+	80% {
+		transform: scale(0.75);
+	}
+	100% {
+		transform: scale(0.75);
 	}
 }
