@@ -15,6 +15,7 @@ body {
 
 /* Make main take all space */
 body {
+	padding: 0 10px;
 	display: flex;
 	flex-direction: column;
 }
@@ -76,6 +77,10 @@ h1 {
 	font-weight: bold;
 	font-style: italic;
 	color: red;
+}
+
+.en-danger {
+	animation: colorbeat 1s infinite;
 }
 
 /* ------- Objet info ------- */
@@ -141,7 +146,7 @@ h1 {
 
 /* ------- Animation ------- */
 
-@keyframes color-beat {
+@keyframes colorbeat {
 	0% {
 		background-color: rgb(192, 241, 160);
 	}

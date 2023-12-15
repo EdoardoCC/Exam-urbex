@@ -1,50 +1,8 @@
-const maxX = 52,
-	maxY = 29,
-	maxJoueur = 4,
-	mouvementPossible = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6],
-	safeZone = [{ x: 1, y: 1 }],
-	Joueur1Element = document.getElementById('joueur1'),
-	Joueur2Element = document.getElementById('joueur2'),
-	Joueur3Element = document.getElementById('joueur3'),
-	Joueur4Element = document.getElementById('joueur4'),
-	fantome = {
-		posX: 1,
-		posY: 1,
-		attack: 1,
-	},
-	joueur1 = {
-		name: 'joueur1',
-		posX: 48,
-		posY: 16,
-		pv: 10,
-		htmlElement: Joueur1Element,
-		inventaire: [],
-	},
-	joueur2 = {
-		name: 'joueur2',
-		posX: 48,
-		posY: 15,
-		pv: 10,
-		htmlElement: Joueur2Element,
-		inventaire: [],
-	},
-	joueur3 = {
-		name: 'joueur3',
-		posX: 48,
-		posY: 14,
-		pv: 10,
-		htmlElement: Joueur3Element,
-		inventaire: [],
-	},
-	joueur4 = {
-		name: 'joueur4',
-		posX: 48,
-		posY: 13,
-		pv: 10,
-		htmlElement: Joueur4Element,
-		inventaire: [],
-	},
-	listJoueur = [joueur1, joueur2, joueur3, joueur4];
+check();
+
+const { maxX, maxY, maxJoueur, mouvementPossible } = JSON.parse(localStorage.getItem('gameInfo')),
+	fantome = JSON.parse(localStorage.getItem('fantome')),
+	listJoueur = JSON.parse(localStorage.getItem('players'));
 
 let VectorX = 1,
 	VectorY = 1,
@@ -52,32 +10,41 @@ let VectorX = 1,
 	fantomeTpIntervalId = null,
 	tourDeJoueur = 1;
 
+function getHtmlElement(id) {
+	return document.getElementById(id);
+}
+
 /**
  * La function `finTour` change le tour du joueur.
  * @returns rien
  */
 function finTour() {
-	listJoueur[tourDeJoueur - 1].htmlElement.classList.remove('playing');
+	getHtmlElement(listJoueur[tourDeJoueur - 1].id).classList.remove('playing');
 	tourDeJoueur = tourDeJoueur + 1;
 	if (tourDeJoueur > maxJoueur) tourDeJoueur = 1;
-	listJoueur[tourDeJoueur - 1].htmlElement.classList.add('playing');
+	getHtmlElement(listJoueur[tourDeJoueur - 1].id).classList.add('playing');
 }
 
 function dangerLvl(joueur, danger) {
-	joueur.htmlElement.children[0].children[1].children[2].textContent = `niveaux de danger ${danger}`;
+	const element = getHtmlElement(`${joueur.id}-danger-lvl`);
+	element.textContent = `niveaux de danger ${danger}`;
+	// Modifie le danger de la grande carte
+	if (getHtmlElement(joueur.id).classList.contains('playing')) {
+		getHtmlElement('playing-danger-lvl').textContent = `niveaux de danger ${danger}`;
+	}
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
 	listJoueur.forEach(joueur => {
-		if (Math.abs(joueur.posX - fantomeX) <= 2 && Math.abs(joueur.posY - fantomeY) <= 2) {
+		if (Math.abs(joueur.posX - fantomeX) <= 5 && Math.abs(joueur.posY - fantomeY) <= 5) {
 			joueur.pv = joueur.pv - attack;
 			dangerLvl(joueur, 10);
 		}
-		if (Math.abs(joueur.posX - fantomeX) <= 5 && Math.abs(joueur.posY - fantomeY) <= 5) {
-			joueur.htmlElement.classList.add('en-danger');
+		if (Math.abs(joueur.posX - fantomeX) <= 10 && Math.abs(joueur.posY - fantomeY) <= 10) {
+			getHtmlElement(joueur.id).classList.add('en-danger');
 			dangerLvl(joueur, 5);
 		} else {
-			joueur.htmlElement.classList.remove('en-danger');
+			getHtmlElement(joueur.id).classList.remove('en-danger');
 			dangerLvl(joueur, 0);
 		}
 	});
@@ -109,7 +76,7 @@ function fantomeDeplacement() {
 		fantome.posY = maxY - 1;
 	}
 
-	// console.log(fantome);
+	localStorage.setItem('fantome', JSON.stringify(fantome));
 	checkDanger(fantome.posX, fantome.posY, fantome.attack);
 }
 
@@ -127,16 +94,16 @@ function fantomeTP() {
 }
 
 function check() {
-	return localStorage.getItem('gameInfo') !== null;
+	// Redirect vers l'accueil si les informations nécessaire pour jouern ne sont pas présente.
+	if (!localStorage.getItem('gameInfo') || !localStorage.getItem('fantome') || !localStorage.getItem('players'))
+		window.location.href = '/';
 }
 
 function init() {
-	// Redirect vers l'accueil si les informations nécessaire pour jouern ne sont pas présente.
-	if (!check()) return (window.location.href = '/');
 	// Déplace le fantome toute les seconde
-	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
+	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 100);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
-	listJoueur[tourDeJoueur - 1].htmlElement.classList.add('playing');
+	getHtmlElement('joueur1').classList.add('playing');
 }
 
 init();
