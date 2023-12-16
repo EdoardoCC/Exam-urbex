@@ -3,22 +3,33 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>Prototype Urbex</title>
 
 		<link rel="stylesheet" href="./css/homePage.css" />
 	</head>
 	<body>
 		<div>
 			<div class="imageMaison"></div>
-
 			<div class="texts" id="positionPlay">Play</div>
-
 			<div class="colorImage">
 				<div id="positionFond"><img id="fondHome" src="./assets/images/ghost_mouth.png" /></div>
 			</div>
 			<div class="texts" id="positionTutorial">Tutorial</div>
 			<div class="texts" id="positionRules">Rules</div>
 		</div>
+		<section id="overlay">
+			<article>
+				<label for="nbPlayer">Nombre de joueurs</label>
+				<input type="number" name="nbPlayer" id="nbPlayer" min="2" max="4" value="2" />
+			</article>
+			<article id="nom-joueur-contenaier">
+				<!-- <article>
+					<label for="nom-j1">Nom joueur 1 : </label>
+					<input type="text" id="nom-j1" name="nom-j1" value="joueur 1">
+				</article> -->
+			</article>
+			<button id="btnConfirmer">Confirmer</button>
+		</section>
 	</body>
 	<script src="./javascripts/acceuil.js"></script>
 </html>

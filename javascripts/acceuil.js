@@ -1,3 +1,7 @@
+const nbPlayer = document.getElementById('nbPlayer');
+const playerContenaire = document.getElementById('nom-joueur-contenaier');
+const confirmerBtn = document.getElementById('btnConfirmer');
+
 function init() {
 	fantome = {
 		posX: 1,
@@ -5,6 +9,7 @@ function init() {
 		attack: 1,
 	};
 	localStorage.setItem('fantome', JSON.stringify(fantome));
+	createPlayerForm();
 }
 
 function startGame(nbPlayer) {
@@ -16,13 +21,14 @@ function startGame(nbPlayer) {
 		safeZone: [{ x: 1, y: 1 }],
 	};
 	localStorage.setItem('gameInfo', JSON.stringify(gameInfo));
+	window.location.href = '/pages/game.html';
 }
 
 function addPlayers(nbPlayer) {
 	const players = [];
 	for (let i = 1; i <= nbPlayer; i++) {
 		players.push({
-			name: `joueur${i}`,
+			name: document.getElementById(`nom-j${i}`).value,
 			id: `joueur${i}`,
 			posX: 48,
 			posY: 14,
@@ -33,6 +39,39 @@ function addPlayers(nbPlayer) {
 	localStorage.setItem('players', JSON.stringify(players));
 }
 
+/**
+ * Crée les différent input pour les noms de joueurs
+ */
+function createPlayerForm() {
+	let newArticle, newLabel, newInput;
+	// Retire les enfants de l'élément parent.
+	playerContenaire.innerHTML = '';
+
+	for (let i = 1; i <= nbPlayer.value; i++) {
+		newArticle = document.createElement('article');
+		newLabel = document.createElement('label');
+		newInput = document.createElement('input');
+
+		// set Label params
+		newLabel.htmlFor = `nom-j${i}`;
+		newLabel.textContent = `Nom joueur ${i} : `;
+
+		// set input params
+		newInput.id = `nom-j${i}`;
+		newInput.name = `nom-j${i}`;
+		newInput.value = `Joueur ${i}`;
+
+		newArticle.append(newLabel);
+		newArticle.append(newInput);
+		playerContenaire.appendChild(newArticle);
+	}
+}
+
+nbPlayer.addEventListener('change', createPlayerForm);
+
+confirmerBtn.addEventListener('click', () => {
+	addPlayers(nbPlayer.value);
+	startGame(nbPlayer.value);
+});
+
 init();
-addPlayers(2);
-startGame(2);

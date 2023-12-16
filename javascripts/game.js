@@ -2,7 +2,8 @@ check();
 
 const { maxX, maxY, maxJoueur, mouvementPossible } = JSON.parse(localStorage.getItem('gameInfo')),
 	fantome = JSON.parse(localStorage.getItem('fantome')),
-	listJoueur = JSON.parse(localStorage.getItem('players'));
+	listJoueur = JSON.parse(localStorage.getItem('players')),
+	playerListContenaire = document.getElementById('player-list-contanaire');
 
 let VectorX = 1,
 	VectorY = 1,
@@ -12,6 +13,55 @@ let VectorX = 1,
 
 function getHtmlElement(id) {
 	return document.getElementById(id);
+}
+
+function createPlayerList() {
+	let newArticle, newLabel, newInput;
+	// Retire les enfants de l'élément parent.
+	playerListContenaire.innerHTML = '';
+
+	for (let i = 1; i <= maxJoueur; i++) {
+		newArticle = document.createElement('article');
+		newImage = document.createElement('img');
+		newDiv = document.createElement('div');
+		newSpan1 = document.createElement('span');
+		newSpan2 = document.createElement('span');
+		newSpan3 = document.createElement('span');
+
+		// Article params
+		newArticle.id = `joueur${i}`;
+		newArticle.classList.add('player-contenaire');
+
+		// Image params
+		newImage.classList.add('avatar');
+		newImage.src = '../assets/images/User_Icon.png';
+		newArticle.append(newImage);
+
+		// Div params
+		newDiv.classList.add('player-info');
+		newArticle.append(newDiv);
+
+		// Span params 1
+		newSpan1.id = `joueur${i}-name`;
+		newSpan1.classList.add('player-name');
+		newSpan1.textContent = listJoueur[i - 1].name;
+		newDiv.append(newSpan1);
+
+		// Span params 2
+		newSpan2.id = `joueur${i}-hp`;
+		newSpan2.classList.add('hp');
+		newSpan2.textContent = `${listJoueur[i - 1].pv}/${listJoueur[i - 1].pv}`;
+		newDiv.append(newSpan2);
+
+		// Span params 3
+		newSpan3.id = `joueur${i}-danger-lvl`;
+		newSpan3.classList.add('danger-lvl');
+		newSpan3.textContent = 'niveaux de danger 0';
+		newDiv.append(newSpan3);
+
+		playerListContenaire.appendChild(newArticle);
+	}
+	return playerListContenaire;
 }
 
 /**
@@ -94,7 +144,7 @@ function fantomeTP() {
 }
 
 function check() {
-	// Redirect vers l'accueil si les informations nécessaire pour jouern ne sont pas présente.
+	// Redirect vers l'accueil si les informations nécessaire pour jouer ne sont pas présente.
 	if (!localStorage.getItem('gameInfo') || !localStorage.getItem('fantome') || !localStorage.getItem('players'))
 		window.location.href = '/';
 }
@@ -104,6 +154,7 @@ function init() {
 	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 100);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
 	getHtmlElement('joueur1').classList.add('playing');
+	createPlayerList();
 }
 
 init();
