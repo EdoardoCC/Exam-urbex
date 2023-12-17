@@ -1,5 +1,53 @@
 body{
     
+	background-image: url('../assets/images/house.png');
+	background-color: rgb(25, 1, 72);
+	background-size: 100%; 
+}
+
+#fondHome{
+	 
+	 width: 28%;
+	 
+}
+
+.colorImage{
+	 -webkit-filter: invert(90%); filter: invert(90%);
+	 
+}
+
+#positionghost{
+	 display: flex;
+	 justify-content: center;
+	 align-items: center;
+	 visibility: hidden;
+}
+
+#positionPlay{
+	top: 75%;
+	left: 44%;
+	text-align: center;
+	position: absolute;
+	color: rgb(255, 0, 0);
+	font-size: 83px;
+}
+
+#positionTutorial{
+		top: 40%;
+		left: 53%;
+		text-align: center;
+		position: absolute;
+		color: rgb(255, 0, 0);
+		font-size: 60px;
+}
+#positionRules{
+	 top: 40%;
+	 left: 35%;
+	 text-align: center;
+	 position: absolute;
+	 color: rgb(255, 0, 0);
+	 font-size: 60px;
+=======
    background-image: url('../assets/images/house.png');
    background-color: rgb(25, 1, 72);
    background-size: 100%; 
@@ -50,7 +98,29 @@ body{
 }
 
 #positionMaison{
-    height: 20%;
-    width: 80%;
+	 height: 20%;
+	 width: 80%;
 }
 
+#overlay {
+	display: none;
+
+	/* Position */
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	/* Style */
+	padding: 30px;
+	background-color: rgba(0, 0, 0, 0.8);
+	height: 50%;
+	width: 50%;
+
+	/* Flex */
+	flex-direction: column;
+	justify-content: space-around;
+
+	/* Text */
+	color: white;
+}
