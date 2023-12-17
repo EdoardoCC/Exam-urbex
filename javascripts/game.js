@@ -84,29 +84,29 @@ function finTour() {
 
 function checkDanger(fantomeX, fantomeY, attack) {
 	listJoueur.forEach(joueur => {
-		if (Math.abs(joueur.posX - fantomeX) < 5 && Math.abs(joueur.posY - fantomeY) < 5) {
-			setPv(joueur.id);
-			updatePlayersData(joueur.id, { key: 'pv', value: joueur.pv - attack });
+		if (Math.abs(joueur.posX - fantomeX) < 5 && Math.abs(joueur.posY - fantomeY) < 5 && joueur.canBeAttacked) {
+			updatePlayersData(joueur.id, { key: 'pv', value: joueur.pv - attack }, { key: 'canBeAttacked', value: false });
 			updatePlayerInfo(joueur, 10);
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
 			getHtmlElement(joueur.id).classList.add('en-danger');
 			updatePlayerInfo(joueur, 5);
 		} else {
 			getHtmlElement(joueur.id).classList.remove('en-danger');
+			updatePlayersData(joueur.id, { key: 'canBeAttacked', value: true });
 			updatePlayerInfo(joueur, 0);
 		}
 	});
 }
 
 function updatePlayerInfo(player, danger = 0) {
-	getHtmlElement(`${player.id}-name`).textContent = player.name;
-	getHtmlElement(`${player.id}-hp`).textContent = `${player.pv}/10`;
-	getHtmlElement(`${player.id}-danger-lvl`).textContent = `niveaux de danger ${danger}`;
 	if (getHtmlElement(player.id).classList.contains('playing')) {
 		getHtmlElement('playing-name').textContent = player.name;
 		getHtmlElement('playing-hp').textContent = `${player.pv}/10`;
 		getHtmlElement('playing-danger-lvl').textContent = `niveaux de danger ${danger}`;
 	}
+	getHtmlElement(`${player.id}-name`).textContent = player.name;
+	getHtmlElement(`${player.id}-hp`).textContent = `${player.pv}/10`;
+	getHtmlElement(`${player.id}-danger-lvl`).textContent = `niveaux de danger ${danger}`;
 }
 
 function updatePlayerPos(player) {
@@ -150,15 +150,15 @@ function fantomeDeplacement() {
 function fantomeTP() {
 	fantome.posX = Math.round(Math.random() * maxX);
 	fantome.posY = Math.round(Math.random() * maxY);
-	if (fantome.posX > 59) fantome.posX = 58;
-	if (fantome.posX < 0) fantome.posX = 1;
-	if (fantome.posY > 59) fantome.posY = 58;
-	if (fantome.posY < 0) fantome.posY = 1;
+	if (fantome.posX > maxX) updateFantomeData({ key: 'posY', value: maxX - 1 });
+	if (fantome.posX < 0) updateFantomeData({ key: 'posY', value: 1 });
+	if (fantome.posY > maxY) updateFantomeData({ key: 'posY', value: maxY - 1 });
+	if (fantome.posY < 0) updateFantomeData({ key: 'posY', value: 1 });
 }
 
 function updateFantomeData(...args) {
 	for (const { key, value } of args) {
-		if (fantome[key]) {
+		if (fantome[key] !== undefined) {
 			fantome[key] = value;
 		}
 	}
@@ -167,8 +167,7 @@ function updateFantomeData(...args) {
 function updatePlayersData(playerId, ...args) {
 	const playerPos = listJoueur.map(player => player.id).indexOf(playerId);
 	for (const { key, value } of args) {
-		if (listJoueur[playerPos][key]) {
-			console.log('true');
+		if (listJoueur[playerPos][key] !== undefined) {
 			listJoueur[playerPos][key] = value;
 		}
 	}
@@ -178,7 +177,6 @@ function updatePlayersData(playerId, ...args) {
 function updateStorage(storageName, dataToCheck) {
 	const oldData = JSON.parse(localStorage.getItem(storageName));
 	const newData = dataToCheck;
-	console.log(oldData !== newData);
 	if (oldData !== newData) {
 		localStorage.setItem(storageName, JSON.stringify(newData));
 		if (storageName === 'players') {
