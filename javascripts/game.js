@@ -85,7 +85,8 @@ function finTour() {
 function checkDanger(fantomeX, fantomeY, attack) {
 	listJoueur.forEach(joueur => {
 		if (Math.abs(joueur.posX - fantomeX) < 5 && Math.abs(joueur.posY - fantomeY) < 5) {
-			setPv(joueur.id, joueur.pv - attack);
+			setPv(joueur.id);
+			updatePlayersData(joueur.id, { key: 'pv', value: joueur.pv - attack });
 			updatePlayerInfo(joueur, 10);
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
 			getHtmlElement(joueur.id).classList.add('en-danger');
@@ -121,25 +122,23 @@ function fantomeDeplacement() {
 	VectorX = mouvementPossible[Math.round(Math.random() * (mouvementPossible.length - 1))];
 	VectorY = mouvementPossible[Math.round(Math.random() * (mouvementPossible.length - 1))];
 
-	fantome.posX = fantome.posX + VectorX;
-	fantome.posY = fantome.posY + VectorY;
+	updateFantomeData({ key: 'posX', value: fantome.posX + VectorX }, { key: 'posY', value: fantome.posY + VectorY });
 
 	if (fantome.posX <= 0) {
 		VectorX = 1;
-		fantome.posX = 1;
+		updateFantomeData({ key: 'posX', value: 1 });
 	} else if (fantome.posX >= maxX) {
 		VectorX = -1;
-		fantome.posX = maxX - 1;
+		updateFantomeData({ key: 'posX', value: maxX - 1 });
 	}
 	if (fantome.posY <= 0) {
 		VectorY = 1;
-		fantome.posY = 1;
+		updateFantomeData({ key: 'posY', value: 1 });
 	} else if (fantome.posY >= maxY) {
 		VectorY = -1;
-		fantome.posY = maxY - 1;
+		updateFantomeData({ key: 'posY', value: maxX - 1 });
 	}
 
-	localStorage.setItem('fantome', JSON.stringify(fantome));
 	updateStorage('fantome', fantome);
 	checkDanger(fantome.posX, fantome.posY, fantome.attack);
 }
@@ -157,32 +156,36 @@ function fantomeTP() {
 	if (fantome.posY < 0) fantome.posY = 1;
 }
 
-function setPos(playerId) {
-	getHtmlElement('setPos').disabled = true;
-	const players = JSON.parse(localStorage.getItem('players'));
-	const playerPos = players.map(player => player.id).indexOf(playerId);
-	players[playerPos].posX = parseInt(getHtmlElement('posX').value);
-	players[playerPos].posY = parseInt(getHtmlElement('posY').value);
-	updatePlayerInfo(listJoueur[playerPos], 0);
-	localStorage.setItem('players', JSON.stringify(players));
-	// listJoueur = JSON.parse(localStorage.getItem('players'));
+function updateFantomeData(...args) {
+	for (const { key, value } of args) {
+		if (fantome[key]) {
+			fantome[key] = value;
+		}
+	}
+	updateStorage('fantome', fantome);
 }
-
-function setPv(playerId, nb) {
-	getHtmlElement('setPos').disabled = true;
-	const players = JSON.parse(localStorage.getItem('players'));
-	const playerPos = players.map(player => player.id).indexOf(playerId);
-	players[playerPos].pv = parseInt(nb);
-	updatePlayerInfo(listJoueur[playerPos], 0);
-	localStorage.setItem('players', JSON.stringify(players));
-	// listJoueur = JSON.parse(localStorage.getItem('players'));
+function updatePlayersData(playerId, ...args) {
+	const playerPos = listJoueur.map(player => player.id).indexOf(playerId);
+	for (const { key, value } of args) {
+		if (listJoueur[playerPos][key]) {
+			console.log('true');
+			listJoueur[playerPos][key] = value;
+		}
+	}
+	updateStorage('players', listJoueur);
 }
 
 function updateStorage(storageName, dataToCheck) {
 	const oldData = JSON.parse(localStorage.getItem(storageName));
 	const newData = dataToCheck;
+	console.log(oldData !== newData);
 	if (oldData !== newData) {
 		localStorage.setItem(storageName, JSON.stringify(newData));
+		if (storageName === 'players') {
+			listJoueur = JSON.parse(localStorage.getItem('players'));
+		} else {
+			fantome = JSON.parse(localStorage.getItem('fantome'));
+		}
 		return 1;
 	}
 	return 0;
@@ -195,7 +198,6 @@ function check() {
 }
 
 function init() {
-	console.log(new Date(), ' : a');
 	// Déplace le fantome toute les seconde
 	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
@@ -205,7 +207,15 @@ function init() {
 	updatePlayerPos(listJoueur[0]);
 }
 
-getHtmlElement('setPos').addEventListener('click', () => setPos(listJoueur[tourDeJoueur - 1].id));
+getHtmlElement('setPos').addEventListener('click', () => {
+	getHtmlElement('setPos').disabled = true;
+	updatePlayersData(
+		listJoueur[tourDeJoueur - 1].id,
+		{ key: 'posX', value: parseInt(getHtmlElement('posX').value) },
+		{ key: 'posY', value: parseInt(getHtmlElement('posY').value) },
+	);
+});
+
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
 	getHtmlElement('setPos').disabled = false;
 	finTour();
