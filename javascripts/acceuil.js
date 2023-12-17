@@ -36,6 +36,7 @@ function addPlayers(nbPlayer) {
 			posX: 48,
 			posY: 14,
 			pv: 10,
+			canBeAttacked: true,
 			inventaire: [],
 		});
 	}
