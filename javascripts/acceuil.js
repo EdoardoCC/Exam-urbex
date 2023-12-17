@@ -1,14 +1,10 @@
-const nbPlayer = document.getElementById('nbPlayer');
-const playerContenaire = document.getElementById('nom-joueur-contenaier');
-const confirmerBtn = document.getElementById('btnConfirmer');
+const nbPlayer = document.getElementById('nbPlayer'),
+	playerContenaire = document.getElementById('nom-joueur-contenaier'),
+	confirmerBtn = document.getElementById('btnConfirmer'),
+	playBtn = document.getElementById('positionPlay'),
+	overlay = document.getElementById('overlay');
 
 function init() {
-	fantome = {
-		posX: 1,
-		posY: 1,
-		attack: 1,
-	};
-	localStorage.setItem('fantome', JSON.stringify(fantome));
 	createPlayerForm();
 }
 
@@ -19,8 +15,15 @@ function startGame(nbPlayer) {
 		maxY: 29,
 		mouvementPossible: [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6],
 		safeZone: [{ x: 1, y: 1 }],
+		trapZone: [{ x: 1, y: 1 }],
 	};
 	localStorage.setItem('gameInfo', JSON.stringify(gameInfo));
+	fantome = {
+		posX: 1,
+		posY: 1,
+		attack: 1,
+	};
+	localStorage.setItem('fantome', JSON.stringify(fantome));
 	window.location.href = '/pages/game.html';
 }
 
@@ -72,6 +75,10 @@ nbPlayer.addEventListener('change', createPlayerForm);
 confirmerBtn.addEventListener('click', () => {
 	addPlayers(nbPlayer.value);
 	startGame(nbPlayer.value);
+});
+
+playBtn.addEventListener('click', () => {
+	overlay.style.display = 'flex';
 });
 
 init();
