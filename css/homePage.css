@@ -29,6 +29,7 @@ body {
 	font-size: 83px;
 }
 
+
 #positionTutorial {
 	top: 40%;
 	left: 53%;
@@ -37,6 +38,7 @@ body {
 	color: rgb(255, 0, 0);
 	font-size: 60px;
 }
+
 #positionRules {
 	top: 40%;
 	left: 35%;
@@ -110,6 +112,96 @@ body {
 
 #positionMaison {
 	width: auto;
+=======
+#positionTutorial{
+		top: 40%;
+		left: 53%;
+		text-align: center;
+		position: absolute;
+		color: rgb(255, 0, 0);
+		font-size: 60px;
+}
+#positionRules{
+	 top: 40%;
+	 left: 35%;
+	 text-align: center;
+	 position: absolute;
+	 color: rgb(255, 0, 0);
+	 font-size: 60px;
+}
+
+#titre{
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 60px;
+    
+    
+}
+
+
+#fondHome{
+    
+    width: 28%;
+    
+}
+
+.colorImage{
+    -webkit-filter: invert(90%); filter: invert(90%);
+    
+}
+
+#positionghost{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+#positionPlay{
+   top: 75%;
+   left: 44%;
+   text-align: center;
+   position: absolute;
+   color: rgb(255, 0, 0);
+   font-size: 60px;
+   background-color: rgb(22, 22, 22);
+}
+
+#positionPlay:hover{
+    
+    background-color: rgb(35, 35, 35);
+}
+
+#positionTutorial{
+     top: 40%;
+     left: 53%;
+     text-align: center;
+     position: absolute;
+     color: rgb(255, 0, 0);
+     font-size: 60px;
+     background-color: rgb(22, 22, 22);
+}
+#positionTutorial:hover{
+    
+    background-color: rgb(35, 35, 35);
+}
+#positionRules{
+    top: 40%;
+    left: 35%;
+    text-align: center;
+    position: absolute;
+    color: rgb(255, 0, 0);
+    font-size: 60px;
+    background-color: rgb(22, 22, 22);
+}
+#positionRules:hover{
+    
+    background-color: rgb(35, 35, 35);
+}
+
+#positionMaison{
+    width: auto;
 }
 
 #overlay {
