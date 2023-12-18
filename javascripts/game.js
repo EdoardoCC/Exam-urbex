@@ -2,7 +2,12 @@ check();
 
 const playerListContenaire = document.getElementById('player-list-contanaire'),
 	playerHp = document.getElementById('playing-hp'),
-	listCle = [];
+	listCle = [],
+	listCode = [];
+sortie = [
+	{ x: 52, y: 16 },
+	{ x: 52, y: 17 },
+];
 
 let VectorX = 1,
 	VectorY = 1,
@@ -61,7 +66,7 @@ function createPlayerList() {
 		// Span params 2
 		newSpan2.id = `joueur${i}-hp`;
 		newSpan2.classList.add('hp');
-		newSpan2.textContent = `${listJoueur[i - 1].pv}/${listJoueur[i - 1].pv}`;
+		newSpan2.textContent = `${listJoueur[i - 1].pv}/10`;
 		newDiv.append(newSpan2);
 
 		// Span params 3
@@ -85,12 +90,21 @@ function finTour() {
 	updatePlayerInfo(listJoueur[gameInfo.tourDeJoueur - 1], 0);
 	gameInfo.tourDeJoueur = gameInfo.tourDeJoueur + 1;
 	if (gameInfo.tourDeJoueur > gameInfo.maxJoueur) gameInfo.tourDeJoueur = 1;
+	for (let i = 0; i < gameInfo.maxJoueur; i++) {
+		if (listJoueur[gameInfo.tourDeJoueur - 1].pv <= 0) gameInfo.tourDeJoueur = gameInfo.tourDeJoueur + 1;
+	}
+	updateGameData({ key: 'tourDeJoueur', value: gameInfo.tourDeJoueur });
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
 	listJoueur.forEach(joueur => {
-		if (Math.abs(joueur.posX - fantomeX) < 5 && Math.abs(joueur.posY - fantomeY) < 5 && joueur.canBeAttacked) {
+		if (
+			Math.abs(joueur.posX - fantomeX) < 5 &&
+			Math.abs(joueur.posY - fantomeY) < 5 &&
+			joueur.canBeAttacked &&
+			joueur.pv > 0
+		) {
 			updatePlayersData(joueur.id, { key: 'pv', value: joueur.pv - attack }, { key: 'canBeAttacked', value: false });
 			updatePlayerInfo(joueur, 10);
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
@@ -170,6 +184,14 @@ function updateCoffresData(index, ...args) {
 	}
 	updateStorage('coffres', coffres);
 }
+function updateGameData(...args) {
+	for (const { key, value } of args) {
+		if (gameInfo[key] !== undefined) {
+			gameInfo[key] = value;
+		}
+	}
+	updateStorage('gameInfo', gameInfo);
+}
 function updateFantomeData(...args) {
 	for (const { key, value } of args) {
 		if (fantome[key] !== undefined) {
@@ -239,20 +261,27 @@ function init() {
 	updatePlayerInfo(listJoueur[0], 0);
 	updatePlayerPos(listJoueur[0]);
 	for (let i = 0; i < gameInfo.fausseCle; i++) {
-		listCle.push('fausseCle');
+		listCle.push({ type: 'fausseCle', code: listCode[i] });
 	}
 	for (let i = 0; i < gameInfo.vraiCle; i++) {
-		listCle.push('vraiCle');
+		listCle.push({ type: 'vraiCle', code: listCode[gameInfo.fausseCle + i] });
 	}
 	// shuffle le tableau
 	listCle.sort((a, b) => 0.5 - Math.random());
 }
 
 function openChest(x, y) {
+	const inventaire = listJoueur[gameInfo.tourDeJoueur - 1].inventaire;
 	for (let i = 0; i < coffres.length; i++) {
 		if (x === coffres[i].x && y === coffres[i].y && !coffres[i].opened) {
 			getHtmlElement('cle').style.display = 'unset';
 			updateCoffresData(i, { key: 'opened', value: true });
+			const cle = listCle.shift();
+			inventaire.push(cle);
+			updatePlayersData(listJoueur[gameInfo.tourDeJoueur - 1].id, {
+				key: 'inventaire',
+				value: inventaire,
+			});
 		}
 	}
 }
@@ -285,6 +314,11 @@ getHtmlElement('setPos').addEventListener('click', () => {
 });
 
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
+	getHtmlElement('cle').style.display = 'none';
+	getHtmlElement('setPos').disabled = false;
+	finTour();
+});
+getHtmlElement('cle-btn').addEventListener('click', () => {
 	getHtmlElement('cle').style.display = 'none';
 	getHtmlElement('setPos').disabled = false;
 	finTour();
