@@ -189,6 +189,22 @@ function updateStorage(storageName, dataToCheck) {
 	return 0;
 }
 
+function useCarde(code) {
+	switch (code) {
+		case 'AXYT':
+			clearInterval(fantomeMovingIntervalId);
+			clearInterval(fantomeTpIntervalId);
+			setTimeout(() => {
+				fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
+				fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
+			}, 20_000);
+			break;
+
+		default:
+			break;
+	}
+}
+
 function check() {
 	// Redirect vers l'accueil si les informations nécessaire pour jouer ne sont pas présente.
 	if (!localStorage.getItem('gameInfo') || !localStorage.getItem('fantome') || !localStorage.getItem('players'))
