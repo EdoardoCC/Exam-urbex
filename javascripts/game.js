@@ -98,6 +98,9 @@ function finTour() {
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
+	if (listJoueur.filter(joueur => joueur.pv <= 0).length === parseInt(gameInfo.maxJoueur)) {
+		loose();
+	}
 	listJoueur.forEach(joueur => {
 		if (
 			Math.abs(joueur.posX - fantomeX) < 5 &&
@@ -252,10 +255,26 @@ function check() {
 		window.location.href = '/';
 }
 
-function init() {
+function play() {
 	// Déplace le fantome toute les seconde
 	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
+}
+
+function pause(time) {
+	clearInterval(fantomeMovingIntervalId);
+	clearInterval(fantomeTpIntervalId);
+	setTimeout(play, time);
+}
+
+function loose() {
+	clearInterval(fantomeMovingIntervalId);
+	clearInterval(fantomeTpIntervalId);
+	window.location.href = '/pages/loose.html';
+}
+
+function init() {
+	play();
 	createPlayerList();
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 	updatePlayerInfo(listJoueur[0], 0);
@@ -318,6 +337,7 @@ getHtmlElement('end-tour-btn').addEventListener('click', () => {
 	getHtmlElement('setPos').disabled = false;
 	finTour();
 });
+
 getHtmlElement('cle-btn').addEventListener('click', () => {
 	getHtmlElement('cle').style.display = 'none';
 	getHtmlElement('setPos').disabled = false;
