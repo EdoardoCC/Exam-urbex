@@ -31,7 +31,8 @@ function addPlayers(nbPlayer) {
 	const players = [];
 	for (let i = 1; i <= nbPlayer; i++) {
 		players.push({
-			name: document.getElementById(`nom-j${i}`).value,
+			name:
+				document.getElementById(`nom-j${i}`).value === '' ? `joueur ${i}` : document.getElementById(`nom-j${i}`).value,
 			id: `joueur${i}`,
 			posX: 48,
 			posY: 14,
@@ -64,6 +65,7 @@ function createPlayerForm() {
 		newInput.id = `nom-j${i}`;
 		newInput.name = `nom-j${i}`;
 		newInput.value = `Joueur ${i}`;
+		newInput.required = true;
 
 		newArticle.append(newLabel);
 		newArticle.append(newInput);
