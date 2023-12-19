@@ -63,6 +63,8 @@ function createPlayerForm() {
 	let newArticle, newLabel, newInput;
 	// Retire les enfants de l'élément parent.
 	playerContenaire.innerHTML = '';
+	if (nbPlayer.value > 4) nbPlayer.value = 4;
+	if (nbPlayer.value < 2) nbPlayer.value = 2;
 
 	for (let i = 1; i <= nbPlayer.value; i++) {
 		newArticle = document.createElement('article');

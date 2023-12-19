@@ -1,9 +1,18 @@
+/**
+ * The code is a JavaScript program that implements a game where players take turns and interact with a
+ * ghost character and chests.
+ * @param id - The `id` parameter is the unique identifier of an HTML element. It is used to select and
+ * manipulate specific elements in the DOM (Document Object Model) using JavaScript.
+ * @returns The code does not have a return statement, so it does not return anything.
+ */
 check();
 
 const playerListContenaire = document.getElementById('player-list-contanaire'),
 	playerHp = document.getElementById('playing-hp'),
 	listCle = [],
-	listCode = [];
+	listCode = [],
+	usedCodeCarde = [],
+	usedCodeCle = [];
 sortie = [
 	{ x: 52, y: 16 },
 	{ x: 52, y: 17 },
@@ -16,7 +25,8 @@ let VectorX = 1,
 	gameInfo = JSON.parse(localStorage.getItem('gameInfo')),
 	fantome = JSON.parse(localStorage.getItem('fantome')),
 	coffres = JSON.parse(localStorage.getItem('coffres')),
-	listJoueur = JSON.parse(localStorage.getItem('players'));
+	listJoueur = JSON.parse(localStorage.getItem('players')),
+	fantomeRalenti = false;
 
 if (gameInfo.maxJoueur > 2) {
 	fausseCle = 4;
@@ -95,6 +105,20 @@ function finTour() {
 	}
 	updateGameData({ key: 'tourDeJoueur', value: gameInfo.tourDeJoueur });
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
+	setMinMax();
+}
+
+// Défini la valeur min max de input
+function setMinMax(multiplicateur = 1) {
+	getHtmlElement('posX').max = (listJoueur[gameInfo.tourDeJoueur - 1].posX + 12) * multiplicateur;
+	getHtmlElement('posX').min = (listJoueur[gameInfo.tourDeJoueur - 1].posX - 12) * multiplicateur;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posX + 12 >= gameInfo.maxX) getHtmlElement('posX').max = gameInfo.maxX;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posX - 12 <= 1) getHtmlElement('posX').min = 1;
+
+	getHtmlElement('posY').max = listJoueur[gameInfo.tourDeJoueur - 1].posY + 12;
+	getHtmlElement('posY').min = listJoueur[gameInfo.tourDeJoueur - 1].posY - 12;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posY + 12 >= gameInfo.maxY) getHtmlElement('posY').max = gameInfo.maxY;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posY - 12 <= 1) getHtmlElement('posY').min = 1;
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
@@ -145,7 +169,14 @@ function fantomeDeplacement() {
 	VectorX = gameInfo.mouvementPossible[Math.round(Math.random() * (gameInfo.mouvementPossible.length - 1))];
 	VectorY = gameInfo.mouvementPossible[Math.round(Math.random() * (gameInfo.mouvementPossible.length - 1))];
 
-	updateFantomeData({ key: 'posX', value: fantome.posX + VectorX }, { key: 'posY', value: fantome.posY + VectorY });
+	if (fantomeRalenti) {
+		updateFantomeData(
+			{ key: 'posX', value: Math.round((fantome.posX + VectorX) / 2) },
+			{ key: 'posY', value: Math.round((fantome.posY + VectorY) / 2) },
+		);
+	} else {
+		updateFantomeData({ key: 'posX', value: fantome.posX + VectorX }, { key: 'posY', value: fantome.posY + VectorY });
+	}
 
 	if (fantome.posX <= 0) {
 		VectorX = 1;
@@ -228,9 +259,16 @@ function updateStorage(storageName, dataToCheck) {
 	return 0;
 }
 
+function codeUsed(arr, code) {
+	if (arr.indexOf(code.toUpperCase()) !== -1) return true;
+	return false;
+}
+
 function useCarde(code) {
-	switch (code) {
-		case 'AXYT':
+	switch (code.toUpperCase()) {
+		case 'PAUSE':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('PAUSE');
 			clearInterval(fantomeMovingIntervalId);
 			clearInterval(fantomeTpIntervalId);
 			setTimeout(() => {
@@ -238,10 +276,52 @@ function useCarde(code) {
 				fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
 			}, 20_000);
 			break;
-
-		default:
+		case 'ZXRST':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('ZXRST');
+			clearInterval(fantomeMovingIntervalId);
+			clearInterval(fantomeTpIntervalId);
+			setTimeout(() => {
+				fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
+				fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
+			}, 20_000);
+			break;
+		case 'ZHLAC':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('ZHLAC');
+			for (let i = 0; i < maxJoueur; i++) {
+				listJoueur[i].pv = 10;
+				updatePlayersData(i, { key: 'pv', value: listJoueur[i].pv });
+			}
+			break;
+		case 'AXZTU':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('AXZTU');
+			setMinMax(2);
+			break;
+		case 'LOWVI':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('LOWVI');
+			fantomeRalenti = true;
+			setTimeout(() => (fantomeRalenti = false), 10_000);
+			break;
+		case 'ABCDZ':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('ABCDZ');
+			fantomeRalenti = true;
+			setTimeout(() => (fantomeRalenti = false), 10_000);
+			break;
+		case 'JRTVA':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('JRTVA');
+			updatePlayersData(
+				listJoueur[gameInfo.tourDeJoueur - 1].id,
+				{ key: 'posX', value: 52 },
+				{ key: 'posY', value: 16 },
+			);
 			break;
 	}
+	getHtmlElement('carte').value = '';
 }
 
 function check() {
@@ -305,6 +385,25 @@ function openChest(x, y) {
 	}
 }
 
+function useCle(code) {
+	console.log(codeUsed(usedCodeCle, code));
+	if (!codeUsed(usedCodeCle, code)) {
+		usedCodeCle.push(code.toUpperCase());
+		const pos = listCle.indexOf(code.toUpperCase());
+		console.log(listCle[pos].type === 'vraiCle');
+		if (listCle[pos].type === 'vraiCle') {
+			window.location.href = '/pages/victoire.html';
+		} else {
+			getHtmlElement('screamer').style.display = 'flex';
+			gameInfo.nbTrap = gameInfo.nbTrap - 1;
+			updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
+			setTimeout(() => {
+				getHtmlElement('screamer').style.display = 'none';
+			}, 500);
+		}
+	}
+}
+
 getHtmlElement('setPos').addEventListener('click', () => {
 	getHtmlElement('setPos').disabled = true;
 	let posX = parseInt(getHtmlElement('posX').value);
@@ -340,6 +439,10 @@ getHtmlElement('setPos').addEventListener('click', () => {
 	}
 });
 
+getHtmlElement('carte-btn').addEventListener('click', () => {
+	useCarde(getHtmlElement('carte').value);
+});
+
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
 	getHtmlElement('cle').style.display = 'none';
 	getHtmlElement('setPos').disabled = false;
@@ -347,7 +450,7 @@ getHtmlElement('end-tour-btn').addEventListener('click', () => {
 });
 
 getHtmlElement('cle-btn').addEventListener('click', () => {
-	// todo victoire check
+	useCle(getHtmlElement('code-cle').value);
 });
 
 init();
