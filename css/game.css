@@ -157,6 +157,30 @@ h1 {
 	animation: heartbeat 1s infinite;
 }
 
+/* ------- Screamer ------- */
+
+#screamer {
+	/* Position */
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	/* Style */
+	display: none;
+	height: 100vh;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.9);
+
+	/* Flex */
+	align-items: center;
+	justify-content: center;
+}
+
+#screamer-img {
+	height: 100%;
+}
+
 /* ------- Animation ------- */
 
 @keyframes colorbeat {

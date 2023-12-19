@@ -330,6 +330,14 @@ getHtmlElement('setPos').addEventListener('click', () => {
 		{ key: 'posX', value: posX },
 		{ key: 'posY', value: posY },
 	);
+	if (Math.random() > 0.7 && gameInfo.nbTrap > 0) {
+		getHtmlElement('screamer').style.display = 'flex';
+		gameInfo.nbTrap = gameInfo.nbTrap - 1;
+		updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
+		setTimeout(() => {
+			getHtmlElement('screamer').style.display = 'none';
+		}, 500);
+	}
 });
 
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
@@ -339,9 +347,7 @@ getHtmlElement('end-tour-btn').addEventListener('click', () => {
 });
 
 getHtmlElement('cle-btn').addEventListener('click', () => {
-	getHtmlElement('cle').style.display = 'none';
-	getHtmlElement('setPos').disabled = false;
-	finTour();
+	// todo victoire check
 });
 
 init();
