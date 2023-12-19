@@ -26,7 +26,8 @@ let VectorX = 1,
 	fantome = JSON.parse(localStorage.getItem('fantome')),
 	coffres = JSON.parse(localStorage.getItem('coffres')),
 	listJoueur = JSON.parse(localStorage.getItem('players')),
-	fantomeRalenti = false;
+	fantomeRalenti = false,
+	btnClick = new Audio('../assets/audios/click-button.mp3');
 
 if (gameInfo.maxJoueur > 2) {
 	fausseCle = 4;
@@ -127,8 +128,8 @@ function checkDanger(fantomeX, fantomeY, attack) {
 	}
 	listJoueur.forEach(joueur => {
 		if (
-			Math.abs(joueur.posX - fantomeX) < 5 &&
-			Math.abs(joueur.posY - fantomeY) < 5 &&
+			Math.abs(joueur.posX - fantomeX) < 2 &&
+			Math.abs(joueur.posY - fantomeY) < 2 &&
 			joueur.canBeAttacked &&
 			joueur.pv > 0
 		) {
@@ -191,7 +192,7 @@ function fantomeDeplacement() {
 		updateFantomeData({ key: 'posY', value: 1 });
 	} else if (fantome.posY >= gameInfo.maxY) {
 		VectorY = -1;
-		updateFantomeData({ key: 'posY', value: gameInfo.maxX - 1 });
+		updateFantomeData({ key: 'posY', value: gameInfo.maxY - 1 });
 	}
 
 	updateStorage('fantome', fantome);
@@ -360,6 +361,9 @@ function init() {
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 	updatePlayerInfo(listJoueur[0], 0);
 	updatePlayerPos(listJoueur[0]);
+	// shuffle le tableau
+	listCode.sort((a, b) => 0.5 - Math.random());
+	listCode.sort((a, b) => 0.5 - Math.random());
 	for (let i = 0; i < gameInfo.fausseCle; i++) {
 		listCle.push({ type: 'fausseCle', code: listCode[i] });
 	}
@@ -394,7 +398,6 @@ function useCle(code) {
 		if (!codeUsed(usedCodeCle, code) && code !== '') {
 			usedCodeCle.push(code.toUpperCase());
 			const pos = listCle.map(cle => cle.code).indexOf(code.toUpperCase());
-			console.log(pos);
 			if (pos !== -1) {
 				if (listCle[pos].type === 'vraiCle') {
 					window.location.href = '/pages/victoire.html';
@@ -412,6 +415,7 @@ function useCle(code) {
 }
 
 getHtmlElement('setPos').addEventListener('click', () => {
+	btnClick.play();
 	getHtmlElement('setPos').disabled = true;
 	let posX = parseInt(getHtmlElement('posX').value);
 	let posY = parseInt(getHtmlElement('posY').value);
@@ -447,16 +451,19 @@ getHtmlElement('setPos').addEventListener('click', () => {
 });
 
 getHtmlElement('carte-btn').addEventListener('click', () => {
+	btnClick.play();
 	useCarde(getHtmlElement('carte').value);
 });
 
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
+	btnClick.play();
 	getHtmlElement('cle').style.display = 'none';
 	getHtmlElement('setPos').disabled = false;
 	finTour();
 });
 
 getHtmlElement('cle-btn').addEventListener('click', () => {
+	btnClick.play();
 	useCle(getHtmlElement('code-cle').value);
 });
 

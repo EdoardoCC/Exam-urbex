@@ -4,6 +4,8 @@ const nbPlayer = document.getElementById('nbPlayer'),
 	playBtn = document.getElementById('positionPlay'),
 	overlay = document.getElementById('overlay');
 
+let btnClick = new Audio('../assets/audios/click-button.mp3');
+
 function init() {
 	createPlayerForm();
 }
@@ -46,8 +48,8 @@ function addPlayers(nbPlayer) {
 			name:
 				document.getElementById(`nom-j${i}`).value === '' ? `joueur ${i}` : document.getElementById(`nom-j${i}`).value,
 			id: `joueur${i}`,
-			posX: 48,
-			posY: 14,
+			posX: 52,
+			posY: 16,
 			pv: 10,
 			canBeAttacked: true,
 			inventaire: [],
@@ -80,6 +82,7 @@ function createPlayerForm() {
 		newInput.name = `nom-j${i}`;
 		newInput.value = `Joueur ${i}`;
 		newInput.required = true;
+		newInput.maxLength = 15;
 
 		newArticle.append(newLabel);
 		newArticle.append(newInput);
@@ -90,11 +93,13 @@ function createPlayerForm() {
 nbPlayer.addEventListener('change', createPlayerForm);
 
 confirmerBtn.addEventListener('click', () => {
+	btnClick.play();
 	addPlayers(nbPlayer.value);
 	startGame(nbPlayer.value);
 });
 
 playBtn.addEventListener('click', () => {
+	btnClick.play();
 	overlay.style.display = 'flex';
 });
 
