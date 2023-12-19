@@ -10,7 +10,7 @@ check();
 const playerListContenaire = document.getElementById('player-list-contanaire'),
 	playerHp = document.getElementById('playing-hp'),
 	listCle = [],
-	listCode = [],
+	listCode = ['OSKOU', 'UUAZR', 'JCPCL', 'TTUUV', 'STABV', 'LOLNN', 'COOLK'],
 	usedCodeCarde = [],
 	usedCodeCle = [];
 sortie = [
@@ -96,8 +96,6 @@ function createPlayerList() {
  */
 function finTour() {
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.remove('playing');
-	updatePlayerPos(listJoueur[gameInfo.tourDeJoueur - 1]);
-	updatePlayerInfo(listJoueur[gameInfo.tourDeJoueur - 1], 0);
 	gameInfo.tourDeJoueur = gameInfo.tourDeJoueur + 1;
 	if (gameInfo.tourDeJoueur > gameInfo.maxJoueur) gameInfo.tourDeJoueur = 1;
 	for (let i = 0; i < gameInfo.maxJoueur; i++) {
@@ -105,6 +103,8 @@ function finTour() {
 	}
 	updateGameData({ key: 'tourDeJoueur', value: gameInfo.tourDeJoueur });
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
+	updatePlayerPos(listJoueur[gameInfo.tourDeJoueur - 1]);
+	updatePlayerInfo(listJoueur[gameInfo.tourDeJoueur - 1], 0);
 	setMinMax();
 }
 
@@ -151,6 +151,7 @@ function updatePlayerInfo(player, danger = 0) {
 		getHtmlElement('playing-hp').textContent = `${player.pv}/10`;
 		getHtmlElement('playing-danger-lvl').textContent = `niveaux de danger ${danger}`;
 	}
+
 	getHtmlElement(`${player.id}-name`).textContent = player.name;
 	getHtmlElement(`${player.id}-hp`).textContent = `${player.pv}/10`;
 	getHtmlElement(`${player.id}-danger-lvl`).textContent = `niveaux de danger ${danger}`;
@@ -354,7 +355,7 @@ function loose() {
 }
 
 function init() {
-	play();
+	setTimeout(play, 10_000);
 	createPlayerList();
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 	updatePlayerInfo(listJoueur[0], 0);
@@ -362,7 +363,7 @@ function init() {
 	for (let i = 0; i < gameInfo.fausseCle; i++) {
 		listCle.push({ type: 'fausseCle', code: listCode[i] });
 	}
-	for (let i = 0; i < gameInfo.vraiCle; i++) {
+	for (let i = 0; i <= gameInfo.vraiCle; i++) {
 		listCle.push({ type: 'vraiCle', code: listCode[gameInfo.fausseCle + i] });
 	}
 	// shuffle le tableau
@@ -386,20 +387,26 @@ function openChest(x, y) {
 }
 
 function useCle(code) {
-	console.log(codeUsed(usedCodeCle, code));
-	if (!codeUsed(usedCodeCle, code)) {
-		usedCodeCle.push(code.toUpperCase());
-		const pos = listCle.indexOf(code.toUpperCase());
-		console.log(listCle[pos].type === 'vraiCle');
-		if (listCle[pos].type === 'vraiCle') {
-			window.location.href = '/pages/victoire.html';
-		} else {
-			getHtmlElement('screamer').style.display = 'flex';
-			gameInfo.nbTrap = gameInfo.nbTrap - 1;
-			updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
-			setTimeout(() => {
-				getHtmlElement('screamer').style.display = 'none';
-			}, 500);
+	if (
+		(listJoueur[gameInfo.tourDeJoueur - 1].posY === 16 || listJoueur[gameInfo.tourDeJoueur - 1].posY === 17) &&
+		listJoueur[gameInfo.tourDeJoueur - 1].posX === 52
+	) {
+		if (!codeUsed(usedCodeCle, code) && code !== '') {
+			usedCodeCle.push(code.toUpperCase());
+			const pos = listCle.map(cle => cle.code).indexOf(code.toUpperCase());
+			console.log(pos);
+			if (pos !== -1) {
+				if (listCle[pos].type === 'vraiCle') {
+					window.location.href = '/pages/victoire.html';
+				} else {
+					getHtmlElement('screamer').style.display = 'flex';
+					gameInfo.nbTrap = gameInfo.nbTrap - 1;
+					updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
+					setTimeout(() => {
+						getHtmlElement('screamer').style.display = 'none';
+					}, 500);
+				}
+			}
 		}
 	}
 }
