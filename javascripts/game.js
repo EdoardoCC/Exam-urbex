@@ -1,16 +1,27 @@
 check();
 
 const playerListContenaire = document.getElementById('player-list-contanaire'),
-	playerHp = document.getElementById('playing-hp');
+	playerHp = document.getElementById('playing-hp'),
+	listCle = [],
+	listCode = [];
+sortie = [
+	{ x: 52, y: 16 },
+	{ x: 52, y: 17 },
+];
 
 let VectorX = 1,
 	VectorY = 1,
 	fantomeMovingIntervalId = null,
 	fantomeTpIntervalId = null,
-	tourDeJoueur = 1,
-	{ maxX, maxY, maxJoueur, mouvementPossible } = JSON.parse(localStorage.getItem('gameInfo')),
+	gameInfo = JSON.parse(localStorage.getItem('gameInfo')),
 	fantome = JSON.parse(localStorage.getItem('fantome')),
+	coffres = JSON.parse(localStorage.getItem('coffres')),
 	listJoueur = JSON.parse(localStorage.getItem('players'));
+
+if (gameInfo.maxJoueur > 2) {
+	fausseCle = 4;
+	vraiCle = 2;
+}
 
 function getHtmlElement(id) {
 	return document.getElementById(id);
@@ -25,7 +36,7 @@ function createPlayerList() {
 	// Retire les enfants de l'élément parent.
 	playerListContenaire.innerHTML = '';
 
-	for (let i = 1; i <= maxJoueur; i++) {
+	for (let i = 1; i <= gameInfo.maxJoueur; i++) {
 		newArticle = document.createElement('article');
 		newImage = document.createElement('img');
 		newDiv = document.createElement('div');
@@ -55,7 +66,7 @@ function createPlayerList() {
 		// Span params 2
 		newSpan2.id = `joueur${i}-hp`;
 		newSpan2.classList.add('hp');
-		newSpan2.textContent = `${listJoueur[i - 1].pv}/${listJoueur[i - 1].pv}`;
+		newSpan2.textContent = `${listJoueur[i - 1].pv}/10`;
 		newDiv.append(newSpan2);
 
 		// Span params 3
@@ -74,17 +85,29 @@ function createPlayerList() {
  * @returns rien
  */
 function finTour() {
-	getHtmlElement(listJoueur[tourDeJoueur - 1].id).classList.remove('playing');
-	updatePlayerPos(listJoueur[tourDeJoueur - 1]);
-	updatePlayerInfo(listJoueur[tourDeJoueur - 1], 0);
-	tourDeJoueur = tourDeJoueur + 1;
-	if (tourDeJoueur > maxJoueur) tourDeJoueur = 1;
-	getHtmlElement(listJoueur[tourDeJoueur - 1].id).classList.add('playing');
+	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.remove('playing');
+	updatePlayerPos(listJoueur[gameInfo.tourDeJoueur - 1]);
+	updatePlayerInfo(listJoueur[gameInfo.tourDeJoueur - 1], 0);
+	gameInfo.tourDeJoueur = gameInfo.tourDeJoueur + 1;
+	if (gameInfo.tourDeJoueur > gameInfo.maxJoueur) gameInfo.tourDeJoueur = 1;
+	for (let i = 0; i < gameInfo.maxJoueur; i++) {
+		if (listJoueur[gameInfo.tourDeJoueur - 1].pv <= 0) gameInfo.tourDeJoueur = gameInfo.tourDeJoueur + 1;
+	}
+	updateGameData({ key: 'tourDeJoueur', value: gameInfo.tourDeJoueur });
+	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
+	if (listJoueur.filter(joueur => joueur.pv <= 0).length === parseInt(gameInfo.maxJoueur)) {
+		loose();
+	}
 	listJoueur.forEach(joueur => {
-		if (Math.abs(joueur.posX - fantomeX) < 5 && Math.abs(joueur.posY - fantomeY) < 5 && joueur.canBeAttacked) {
+		if (
+			Math.abs(joueur.posX - fantomeX) < 5 &&
+			Math.abs(joueur.posY - fantomeY) < 5 &&
+			joueur.canBeAttacked &&
+			joueur.pv > 0
+		) {
 			updatePlayersData(joueur.id, { key: 'pv', value: joueur.pv - attack }, { key: 'canBeAttacked', value: false });
 			updatePlayerInfo(joueur, 10);
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
@@ -119,24 +142,24 @@ function updatePlayerPos(player) {
  * @returns rien
  */
 function fantomeDeplacement() {
-	VectorX = mouvementPossible[Math.round(Math.random() * (mouvementPossible.length - 1))];
-	VectorY = mouvementPossible[Math.round(Math.random() * (mouvementPossible.length - 1))];
+	VectorX = gameInfo.mouvementPossible[Math.round(Math.random() * (gameInfo.mouvementPossible.length - 1))];
+	VectorY = gameInfo.mouvementPossible[Math.round(Math.random() * (gameInfo.mouvementPossible.length - 1))];
 
 	updateFantomeData({ key: 'posX', value: fantome.posX + VectorX }, { key: 'posY', value: fantome.posY + VectorY });
 
 	if (fantome.posX <= 0) {
 		VectorX = 1;
 		updateFantomeData({ key: 'posX', value: 1 });
-	} else if (fantome.posX >= maxX) {
+	} else if (fantome.posX >= gameInfo.maxX) {
 		VectorX = -1;
-		updateFantomeData({ key: 'posX', value: maxX - 1 });
+		updateFantomeData({ key: 'posX', value: gameInfo.maxX - 1 });
 	}
 	if (fantome.posY <= 0) {
 		VectorY = 1;
 		updateFantomeData({ key: 'posY', value: 1 });
-	} else if (fantome.posY >= maxY) {
+	} else if (fantome.posY >= gameInfo.maxY) {
 		VectorY = -1;
-		updateFantomeData({ key: 'posY', value: maxX - 1 });
+		updateFantomeData({ key: 'posY', value: gameInfo.maxX - 1 });
 	}
 
 	updateStorage('fantome', fantome);
@@ -148,14 +171,30 @@ function fantomeDeplacement() {
  * @returns rien
  */
 function fantomeTP() {
-	fantome.posX = Math.round(Math.random() * maxX);
-	fantome.posY = Math.round(Math.random() * maxY);
-	if (fantome.posX > maxX) updateFantomeData({ key: 'posY', value: maxX - 1 });
+	fantome.posX = Math.round(Math.random() * gameInfo.maxX);
+	fantome.posY = Math.round(Math.random() * gameInfo.maxY);
+	if (fantome.posX > gameInfo.maxX) updateFantomeData({ key: 'posY', value: gameInfo.maxX - 1 });
 	if (fantome.posX < 0) updateFantomeData({ key: 'posY', value: 1 });
-	if (fantome.posY > maxY) updateFantomeData({ key: 'posY', value: maxY - 1 });
+	if (fantome.posY > gameInfo.maxY) updateFantomeData({ key: 'posY', value: gameInfo.maxY - 1 });
 	if (fantome.posY < 0) updateFantomeData({ key: 'posY', value: 1 });
 }
 
+function updateCoffresData(index, ...args) {
+	for (const { key, value } of args) {
+		if (coffres[index][key] !== undefined) {
+			coffres[index][key] = value;
+		}
+	}
+	updateStorage('coffres', coffres);
+}
+function updateGameData(...args) {
+	for (const { key, value } of args) {
+		if (gameInfo[key] !== undefined) {
+			gameInfo[key] = value;
+		}
+	}
+	updateStorage('gameInfo', gameInfo);
+}
 function updateFantomeData(...args) {
 	for (const { key, value } of args) {
 		if (fantome[key] !== undefined) {
@@ -207,32 +246,108 @@ function useCarde(code) {
 
 function check() {
 	// Redirect vers l'accueil si les informations nécessaire pour jouer ne sont pas présente.
-	if (!localStorage.getItem('gameInfo') || !localStorage.getItem('fantome') || !localStorage.getItem('players'))
+	if (
+		!localStorage.getItem('gameInfo') ||
+		!localStorage.getItem('fantome') ||
+		!localStorage.getItem('players') ||
+		!localStorage.getItem('coffres')
+	)
 		window.location.href = '/';
 }
 
-function init() {
+function play() {
 	// Déplace le fantome toute les seconde
 	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
+}
+
+function pause(time) {
+	clearInterval(fantomeMovingIntervalId);
+	clearInterval(fantomeTpIntervalId);
+	setTimeout(play, time);
+}
+
+function loose() {
+	clearInterval(fantomeMovingIntervalId);
+	clearInterval(fantomeTpIntervalId);
+	window.location.href = '/pages/loose.html';
+}
+
+function init() {
+	play();
 	createPlayerList();
-	getHtmlElement(listJoueur[tourDeJoueur - 1].id).classList.add('playing');
+	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 	updatePlayerInfo(listJoueur[0], 0);
 	updatePlayerPos(listJoueur[0]);
+	for (let i = 0; i < gameInfo.fausseCle; i++) {
+		listCle.push({ type: 'fausseCle', code: listCode[i] });
+	}
+	for (let i = 0; i < gameInfo.vraiCle; i++) {
+		listCle.push({ type: 'vraiCle', code: listCode[gameInfo.fausseCle + i] });
+	}
+	// shuffle le tableau
+	listCle.sort((a, b) => 0.5 - Math.random());
+}
+
+function openChest(x, y) {
+	const inventaire = listJoueur[gameInfo.tourDeJoueur - 1].inventaire;
+	for (let i = 0; i < coffres.length; i++) {
+		if (x === coffres[i].x && y === coffres[i].y && !coffres[i].opened) {
+			getHtmlElement('cle').style.display = 'unset';
+			updateCoffresData(i, { key: 'opened', value: true });
+			const cle = listCle.shift();
+			inventaire.push(cle);
+			updatePlayersData(listJoueur[gameInfo.tourDeJoueur - 1].id, {
+				key: 'inventaire',
+				value: inventaire,
+			});
+		}
+	}
 }
 
 getHtmlElement('setPos').addEventListener('click', () => {
 	getHtmlElement('setPos').disabled = true;
+	let posX = parseInt(getHtmlElement('posX').value);
+	let posY = parseInt(getHtmlElement('posY').value);
+	if (posX > gameInfo.maxX) {
+		posX = gameInfo.maxX;
+		getHtmlElement('posX').value = gameInfo.maxX;
+	} else if (posX < 1) {
+		posX = 1;
+		getHtmlElement('posX').value = 1;
+	}
+	if (posY > gameInfo.maxY) {
+		posY = gameInfo.maxY;
+		getHtmlElement('posY').value = gameInfo.maxY;
+	} else if (posY < 1) {
+		posY = 1;
+		getHtmlElement('posY').value = 1;
+	}
+
+	openChest(posX, posY);
 	updatePlayersData(
-		listJoueur[tourDeJoueur - 1].id,
-		{ key: 'posX', value: parseInt(getHtmlElement('posX').value) },
-		{ key: 'posY', value: parseInt(getHtmlElement('posY').value) },
+		listJoueur[gameInfo.tourDeJoueur - 1].id,
+		{ key: 'posX', value: posX },
+		{ key: 'posY', value: posY },
 	);
+	if (Math.random() > 0.7 && gameInfo.nbTrap > 0) {
+		getHtmlElement('screamer').style.display = 'flex';
+		gameInfo.nbTrap = gameInfo.nbTrap - 1;
+		updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
+		setTimeout(() => {
+			getHtmlElement('screamer').style.display = 'none';
+		}, 500);
+	}
 });
 
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
+	getHtmlElement('cle').style.display = 'none';
 	getHtmlElement('setPos').disabled = false;
 	finTour();
+});
+
+getHtmlElement('cle-btn').addEventListener('click', () => {
+	// todo victoire check
 });
 
 init();

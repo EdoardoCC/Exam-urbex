@@ -24,7 +24,10 @@
 			<section id="game-info-contanaire">
 				<article id="objet-contenaire">
 					<h2>Objet trouvé :</h2>
-					<img id="quadre" src="../assets/images/quadre.png" />
+					<div id="quadre-contenaire">
+						<img id="quadre" src="../assets/images/quadre.png" />
+						<img src="../assets/images/key_draw.png" alt="key_draw" id="cle" />
+					</div>
 					<img id="coffre" src="../assets/images/coffre_PNG.png" />
 				</article>
 				<article id="player-playing">
@@ -66,7 +69,15 @@
 				</article>
 				<article id="end-tour">
 					<button id="end-tour-btn">Fin tour</button>
+					<div>
+						<label for="code-cle">Entrez le code de la clé a utilisé</label>
+						<input type="text" name="code-cle" id="code-cle" />
+					</div>
+					<button id="cle-btn">Utiliser clé</button>
 				</article>
+			</section>
+			<section id="screamer">
+				<img src="../assets/images/screamer.jpg" alt="screamer" id="screamer-img" />
 			</section>
 		</main>
 	</body>
