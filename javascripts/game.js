@@ -1,10 +1,3 @@
-/**
- * The code is a JavaScript program that implements a game where players take turns and interact with a
- * ghost character and chests.
- * @param id - The `id` parameter is the unique identifier of an HTML element. It is used to select and
- * manipulate specific elements in the DOM (Document Object Model) using JavaScript.
- * @returns The code does not have a return statement, so it does not return anything.
- */
 check();
 
 const playerListContenaire = document.getElementById('player-list-contanaire'),
@@ -127,6 +120,7 @@ function setMinMax(multiplicateur = 1) {
 	if (listJoueur[gameInfo.tourDeJoueur - 1].posY - 12 <= 1) getHtmlElement('posY').min = 1;
 }
 
+// Vérifie le niveau de danger
 function checkDanger(fantomeX, fantomeY, attack) {
 	if (listJoueur.filter(joueur => joueur.pv <= 0).length === parseInt(gameInfo.maxJoueur)) {
 		loose();
@@ -143,16 +137,17 @@ function checkDanger(fantomeX, fantomeY, attack) {
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
 			getHtmlElement(joueur.id).classList.add('en-danger');
 			updatePlayerInfo(joueur, 5);
-			// alarmSound.play();
+			alarmSound.play();
 		} else {
 			getHtmlElement(joueur.id).classList.remove('en-danger');
 			updatePlayersData(joueur.id, { key: 'canBeAttacked', value: true });
 			updatePlayerInfo(joueur, 0);
-			// alarmSound.pause();
+			alarmSound.pause();
 		}
 	});
 }
 
+// Mets à jour les info du joueur qui joue
 function updatePlayerInfo(player, danger = 0) {
 	if (getHtmlElement(player.id).classList.contains('playing')) {
 		getHtmlElement('playing-name').textContent = player.name;
@@ -165,6 +160,7 @@ function updatePlayerInfo(player, danger = 0) {
 	getHtmlElement(`${player.id}-danger-lvl`).textContent = `niveaux de danger ${danger}`;
 }
 
+// Mets à jour la position du joueur qui joue
 function updatePlayerPos(player) {
 	getHtmlElement('posX').value = player.posX;
 	getHtmlElement('posY').value = player.posY;
@@ -219,6 +215,7 @@ function fantomeTP() {
 	if (fantome.posY < 0) updateFantomeData({ key: 'posY', value: 1 });
 }
 
+// Met a jour le contenu du coffre
 function updateCoffresData(index, ...args) {
 	for (const { key, value } of args) {
 		if (coffres[index][key] !== undefined) {
@@ -227,6 +224,8 @@ function updateCoffresData(index, ...args) {
 	}
 	updateStorage('coffres', coffres);
 }
+
+// Mets a jour les info de la partie
 function updateGameData(...args) {
 	for (const { key, value } of args) {
 		if (gameInfo[key] !== undefined) {
@@ -235,6 +234,8 @@ function updateGameData(...args) {
 	}
 	updateStorage('gameInfo', gameInfo);
 }
+
+// Met a jour les information du fantome
 function updateFantomeData(...args) {
 	for (const { key, value } of args) {
 		if (fantome[key] !== undefined) {
@@ -243,6 +244,8 @@ function updateFantomeData(...args) {
 	}
 	updateStorage('fantome', fantome);
 }
+
+// Met a jour les information du joueur
 function updatePlayersData(playerId, ...args) {
 	const playerPos = listJoueur.map(player => player.id).indexOf(playerId);
 	for (const { key, value } of args) {
@@ -253,6 +256,7 @@ function updatePlayersData(playerId, ...args) {
 	updateStorage('players', listJoueur);
 }
 
+// Met a jour les information du storage
 function updateStorage(storageName, dataToCheck) {
 	const oldData = JSON.parse(localStorage.getItem(storageName));
 	const newData = dataToCheck;
@@ -268,11 +272,13 @@ function updateStorage(storageName, dataToCheck) {
 	return 0;
 }
 
+// Vérifie si le code est utilisé
 function codeUsed(arr, code) {
 	if (arr.indexOf(code.toUpperCase()) !== -1) return true;
 	return false;
 }
 
+// Vérifie le code de la carte utilisé et l'active s'il est valide
 function useCarde(code) {
 	switch (code.toUpperCase()) {
 		case 'PAUSE':
@@ -324,6 +330,7 @@ function useCarde(code) {
 	getHtmlElement('carte').value = '';
 }
 
+// Vérifie que tout est bien initialisé
 function check() {
 	// Redirect vers l'accueil si les informations nécessaire pour jouer ne sont pas présente.
 	if (
@@ -335,18 +342,21 @@ function check() {
 		window.location.href = '../';
 }
 
+// Commence les mouvement du fantome
 function play() {
 	// Déplace le fantome toute les seconde
 	fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
 	fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
 }
 
+// Mets en pause les mouvement du fantome pendant une durée limité
 function pause(time) {
 	clearInterval(fantomeMovingIntervalId);
 	clearInterval(fantomeTpIntervalId);
 	setTimeout(play, time);
 }
 
+// Envoye vers la page perdu
 function loose() {
 	clearInterval(fantomeMovingIntervalId);
 	clearInterval(fantomeTpIntervalId);
@@ -379,9 +389,9 @@ function init() {
 	alarmSound.volume = 0.05;
 	alarmSound.loop = true;
 	backgroundSound.loop = true;
-	
 }
 
+// Ouvre un coffre
 function openChest(x, y) {
 	const inventaire = listJoueur[gameInfo.tourDeJoueur - 1].inventaire;
 	for (let i = 0; i < coffres.length; i++) {
@@ -398,6 +408,7 @@ function openChest(x, y) {
 	}
 }
 
+// Utilisé une clé
 function useCle(code) {
 	if (
 		(listJoueur[gameInfo.tourDeJoueur - 1].posY === 16 || listJoueur[gameInfo.tourDeJoueur - 1].posY === 17) &&
@@ -462,6 +473,7 @@ getHtmlElement('setPos').addEventListener('click', () => {
 	}
 });
 
+// Joue le screamer
 function screamer() {
 	screamerSound.volume = 0.5;
 	screamerSound.play();
