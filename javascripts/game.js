@@ -1,9 +1,18 @@
+/**
+ * The code is a JavaScript program that implements a game where players take turns and interact with a
+ * ghost character and chests.
+ * @param id - The `id` parameter is the unique identifier of an HTML element. It is used to select and
+ * manipulate specific elements in the DOM (Document Object Model) using JavaScript.
+ * @returns The code does not have a return statement, so it does not return anything.
+ */
 check();
 
 const playerListContenaire = document.getElementById('player-list-contanaire'),
 	playerHp = document.getElementById('playing-hp'),
 	listCle = [],
-	listCode = [];
+	listCode = ['OSKOU', 'UUAZR', 'JCPCL', 'TTUUV', 'STABV', 'LOLNN', 'COOLK'],
+	usedCodeCarde = [],
+	usedCodeCle = [];
 sortie = [
 	{ x: 52, y: 16 },
 	{ x: 52, y: 17 },
@@ -16,7 +25,9 @@ let VectorX = 1,
 	gameInfo = JSON.parse(localStorage.getItem('gameInfo')),
 	fantome = JSON.parse(localStorage.getItem('fantome')),
 	coffres = JSON.parse(localStorage.getItem('coffres')),
-	listJoueur = JSON.parse(localStorage.getItem('players'));
+	listJoueur = JSON.parse(localStorage.getItem('players')),
+	fantomeRalenti = false,
+	btnClick = new Audio('../assets/audios/click-button.mp3');
 
 if (gameInfo.maxJoueur > 2) {
 	fausseCle = 4;
@@ -86,8 +97,6 @@ function createPlayerList() {
  */
 function finTour() {
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.remove('playing');
-	updatePlayerPos(listJoueur[gameInfo.tourDeJoueur - 1]);
-	updatePlayerInfo(listJoueur[gameInfo.tourDeJoueur - 1], 0);
 	gameInfo.tourDeJoueur = gameInfo.tourDeJoueur + 1;
 	if (gameInfo.tourDeJoueur > gameInfo.maxJoueur) gameInfo.tourDeJoueur = 1;
 	for (let i = 0; i < gameInfo.maxJoueur; i++) {
@@ -95,6 +104,22 @@ function finTour() {
 	}
 	updateGameData({ key: 'tourDeJoueur', value: gameInfo.tourDeJoueur });
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
+	updatePlayerPos(listJoueur[gameInfo.tourDeJoueur - 1]);
+	updatePlayerInfo(listJoueur[gameInfo.tourDeJoueur - 1], 0);
+	setMinMax();
+}
+
+// Défini la valeur min max de input
+function setMinMax(multiplicateur = 1) {
+	getHtmlElement('posX').max = (listJoueur[gameInfo.tourDeJoueur - 1].posX + 12) * multiplicateur;
+	getHtmlElement('posX').min = (listJoueur[gameInfo.tourDeJoueur - 1].posX - 12) * multiplicateur;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posX + 12 >= gameInfo.maxX) getHtmlElement('posX').max = gameInfo.maxX;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posX - 12 <= 1) getHtmlElement('posX').min = 1;
+
+	getHtmlElement('posY').max = listJoueur[gameInfo.tourDeJoueur - 1].posY + 12;
+	getHtmlElement('posY').min = listJoueur[gameInfo.tourDeJoueur - 1].posY - 12;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posY + 12 >= gameInfo.maxY) getHtmlElement('posY').max = gameInfo.maxY;
+	if (listJoueur[gameInfo.tourDeJoueur - 1].posY - 12 <= 1) getHtmlElement('posY').min = 1;
 }
 
 function checkDanger(fantomeX, fantomeY, attack) {
@@ -103,8 +128,8 @@ function checkDanger(fantomeX, fantomeY, attack) {
 	}
 	listJoueur.forEach(joueur => {
 		if (
-			Math.abs(joueur.posX - fantomeX) < 5 &&
-			Math.abs(joueur.posY - fantomeY) < 5 &&
+			Math.abs(joueur.posX - fantomeX) < 2 &&
+			Math.abs(joueur.posY - fantomeY) < 2 &&
 			joueur.canBeAttacked &&
 			joueur.pv > 0
 		) {
@@ -127,6 +152,7 @@ function updatePlayerInfo(player, danger = 0) {
 		getHtmlElement('playing-hp').textContent = `${player.pv}/10`;
 		getHtmlElement('playing-danger-lvl').textContent = `niveaux de danger ${danger}`;
 	}
+
 	getHtmlElement(`${player.id}-name`).textContent = player.name;
 	getHtmlElement(`${player.id}-hp`).textContent = `${player.pv}/10`;
 	getHtmlElement(`${player.id}-danger-lvl`).textContent = `niveaux de danger ${danger}`;
@@ -145,7 +171,14 @@ function fantomeDeplacement() {
 	VectorX = gameInfo.mouvementPossible[Math.round(Math.random() * (gameInfo.mouvementPossible.length - 1))];
 	VectorY = gameInfo.mouvementPossible[Math.round(Math.random() * (gameInfo.mouvementPossible.length - 1))];
 
-	updateFantomeData({ key: 'posX', value: fantome.posX + VectorX }, { key: 'posY', value: fantome.posY + VectorY });
+	if (fantomeRalenti) {
+		updateFantomeData(
+			{ key: 'posX', value: Math.round((fantome.posX + VectorX) / 2) },
+			{ key: 'posY', value: Math.round((fantome.posY + VectorY) / 2) },
+		);
+	} else {
+		updateFantomeData({ key: 'posX', value: fantome.posX + VectorX }, { key: 'posY', value: fantome.posY + VectorY });
+	}
 
 	if (fantome.posX <= 0) {
 		VectorX = 1;
@@ -159,7 +192,7 @@ function fantomeDeplacement() {
 		updateFantomeData({ key: 'posY', value: 1 });
 	} else if (fantome.posY >= gameInfo.maxY) {
 		VectorY = -1;
-		updateFantomeData({ key: 'posY', value: gameInfo.maxX - 1 });
+		updateFantomeData({ key: 'posY', value: gameInfo.maxY - 1 });
 	}
 
 	updateStorage('fantome', fantome);
@@ -228,20 +261,60 @@ function updateStorage(storageName, dataToCheck) {
 	return 0;
 }
 
-function useCarde(code) {
-	switch (code) {
-		case 'AXYT':
-			clearInterval(fantomeMovingIntervalId);
-			clearInterval(fantomeTpIntervalId);
-			setTimeout(() => {
-				fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
-				fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
-			}, 20_000);
-			break;
+function codeUsed(arr, code) {
+	if (arr.indexOf(code.toUpperCase()) !== -1) return true;
+	return false;
+}
 
-		default:
+function useCarde(code) {
+	switch (code.toUpperCase()) {
+		case 'PAUSE':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('PAUSE');
+			clearInterval(fantomeMovingIntervalId);
+			pause(20_000);
+			break;
+		case 'ZXRST':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('ZXRST');
+			pause(20_000);
+			break;
+		case 'ZHLAC':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('ZHLAC');
+			for (let i = 0; i < gameInfo.maxJoueur; i++) {
+				listJoueur[i].pv = 10;
+				updatePlayersData(listJoueur[i].id, { key: 'pv', value: listJoueur[i].pv });
+			}
+			break;
+		case 'AXZTU':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('AXZTU');
+			setMinMax(2);
+			break;
+		case 'LOWVI':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('LOWVI');
+			fantomeRalenti = true;
+			setTimeout(() => (fantomeRalenti = false), 10_000);
+			break;
+		case 'ABCDZ':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('ABCDZ');
+			fantomeRalenti = true;
+			setTimeout(() => (fantomeRalenti = false), 10_000);
+			break;
+		case 'JRTVA':
+			if (codeUsed(usedCodeCarde, code)) break;
+			usedCodeCarde.push('JRTVA');
+			updatePlayersData(
+				listJoueur[gameInfo.tourDeJoueur - 1].id,
+				{ key: 'posX', value: 52 },
+				{ key: 'posY', value: 16 },
+			);
 			break;
 	}
+	getHtmlElement('carte').value = '';
 }
 
 function check() {
@@ -274,15 +347,18 @@ function loose() {
 }
 
 function init() {
-	play();
+	setTimeout(play, 10_000);
 	createPlayerList();
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 	updatePlayerInfo(listJoueur[0], 0);
 	updatePlayerPos(listJoueur[0]);
+	// shuffle le tableau
+	listCode.sort((a, b) => 0.5 - Math.random());
+	listCode.sort((a, b) => 0.5 - Math.random());
 	for (let i = 0; i < gameInfo.fausseCle; i++) {
 		listCle.push({ type: 'fausseCle', code: listCode[i] });
 	}
-	for (let i = 0; i < gameInfo.vraiCle; i++) {
+	for (let i = 0; i <= gameInfo.vraiCle; i++) {
 		listCle.push({ type: 'vraiCle', code: listCode[gameInfo.fausseCle + i] });
 	}
 	// shuffle le tableau
@@ -305,7 +381,32 @@ function openChest(x, y) {
 	}
 }
 
+function useCle(code) {
+	if (
+		(listJoueur[gameInfo.tourDeJoueur - 1].posY === 16 || listJoueur[gameInfo.tourDeJoueur - 1].posY === 17) &&
+		listJoueur[gameInfo.tourDeJoueur - 1].posX === 52
+	) {
+		if (!codeUsed(usedCodeCle, code) && code !== '') {
+			usedCodeCle.push(code.toUpperCase());
+			const pos = listCle.map(cle => cle.code).indexOf(code.toUpperCase());
+			if (pos !== -1) {
+				if (listCle[pos].type === 'vraiCle') {
+					window.location.href = '/pages/victoire.html';
+				} else {
+					getHtmlElement('screamer').style.display = 'flex';
+					gameInfo.nbTrap = gameInfo.nbTrap - 1;
+					updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
+					setTimeout(() => {
+						getHtmlElement('screamer').style.display = 'none';
+					}, 500);
+				}
+			}
+		}
+	}
+}
+
 getHtmlElement('setPos').addEventListener('click', () => {
+	btnClick.play();
 	getHtmlElement('setPos').disabled = true;
 	let posX = parseInt(getHtmlElement('posX').value);
 	let posY = parseInt(getHtmlElement('posY').value);
@@ -340,14 +441,21 @@ getHtmlElement('setPos').addEventListener('click', () => {
 	}
 });
 
+getHtmlElement('carte-btn').addEventListener('click', () => {
+	btnClick.play();
+	useCarde(getHtmlElement('carte').value);
+});
+
 getHtmlElement('end-tour-btn').addEventListener('click', () => {
+	btnClick.play();
 	getHtmlElement('cle').style.display = 'none';
 	getHtmlElement('setPos').disabled = false;
 	finTour();
 });
 
 getHtmlElement('cle-btn').addEventListener('click', () => {
-	// todo victoire check
+	btnClick.play();
+	useCle(getHtmlElement('code-cle').value);
 });
 
 init();
