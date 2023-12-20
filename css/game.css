@@ -112,6 +112,19 @@ h1 {
 	background-color: white;
 }
 
+#quadre-contenaire {
+	height: 200px;
+	width: 200px;
+}
+
+#cle {
+	display: none;
+	position: relative;
+	top: -150px;
+	left: 40px;
+	height: 100px;
+}
+
 #coffre {
 	height: 100px;
 	width: 100px;
@@ -120,7 +133,7 @@ h1 {
 /* ------- Playing ------- */
 
 #player-playing {
-  padding: 20px;
+	padding: 20px;
 	height: 50%;
 	width: 40%;
 	background-color: rgb(192, 241, 160);
@@ -142,6 +155,30 @@ h1 {
 .warning {
 	width: 40px;
 	animation: heartbeat 1s infinite;
+}
+
+/* ------- Screamer ------- */
+
+#screamer {
+	/* Position */
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	/* Style */
+	display: none;
+	height: 100vh;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.9);
+
+	/* Flex */
+	align-items: center;
+	justify-content: center;
+}
+
+#screamer-img {
+	height: 100%;
 }
 
 /* ------- Animation ------- */
