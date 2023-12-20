@@ -272,28 +272,19 @@ function useCarde(code) {
 			if (codeUsed(usedCodeCarde, code)) break;
 			usedCodeCarde.push('PAUSE');
 			clearInterval(fantomeMovingIntervalId);
-			clearInterval(fantomeTpIntervalId);
-			setTimeout(() => {
-				fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
-				fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
-			}, 20_000);
+			pause(20_000);
 			break;
 		case 'ZXRST':
 			if (codeUsed(usedCodeCarde, code)) break;
 			usedCodeCarde.push('ZXRST');
-			clearInterval(fantomeMovingIntervalId);
-			clearInterval(fantomeTpIntervalId);
-			setTimeout(() => {
-				fantomeMovingIntervalId = setInterval(fantomeDeplacement, 1_000);
-				fantomeTpIntervalId = setInterval(fantomeTP, 20_000);
-			}, 20_000);
+			pause(20_000);
 			break;
 		case 'ZHLAC':
 			if (codeUsed(usedCodeCarde, code)) break;
 			usedCodeCarde.push('ZHLAC');
-			for (let i = 0; i < maxJoueur; i++) {
+			for (let i = 0; i < gameInfo.maxJoueur; i++) {
 				listJoueur[i].pv = 10;
-				updatePlayersData(i, { key: 'pv', value: listJoueur[i].pv });
+				updatePlayersData(listJoueur[i].id, { key: 'pv', value: listJoueur[i].pv });
 			}
 			break;
 		case 'AXZTU':
