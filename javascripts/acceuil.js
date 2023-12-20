@@ -39,7 +39,7 @@ function startGame(nbPlayer) {
 		{ x: 28, y: 2, opened: false },
 	];
 	localStorage.setItem('coffres', JSON.stringify(coffres));
-	window.location.href = '/pages/game.html';
+	window.location.href = './pages/game.html';
 }
 
 function addPlayers(nbPlayer) {
