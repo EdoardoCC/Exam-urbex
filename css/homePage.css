@@ -53,6 +53,7 @@ a {
 	font-size: 60px;
 }
 
+
 #titre {
 	display: flex;
 	justify-content: center;
@@ -64,17 +65,12 @@ a {
 	width: 28%;
 }
 
+
 .colorImage {
 	-webkit-filter: invert(90%);
 	filter: invert(90%);
 }
 
-#positionghost {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-}
 
 #positionPlay {
 	top: 75%;
