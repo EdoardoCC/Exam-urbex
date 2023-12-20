@@ -65,12 +65,6 @@ body {
 	filter: invert(90%);
 }
 
-#positionghost {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-}
 
 #positionPlay {
 	top: 75%;
