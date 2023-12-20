@@ -137,7 +137,9 @@ function checkDanger(fantomeX, fantomeY, attack) {
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
 			getHtmlElement(joueur.id).classList.add('en-danger');
 			updatePlayerInfo(joueur, 5);
-			alarmSound.play();
+			if (alarmSound.paused) {
+				alarmSound.play();
+			}
 		} else {
 			getHtmlElement(joueur.id).classList.remove('en-danger');
 			updatePlayersData(joueur.id, { key: 'canBeAttacked', value: true });
@@ -386,8 +388,6 @@ function init() {
 	}
 	// shuffle le tableau
 	listCle.sort((a, b) => 0.5 - Math.random());
-	alarmSound.volume = 0.05;
-	alarmSound.loop = true;
 	backgroundSound.loop = true;
 }
 
@@ -475,7 +475,7 @@ getHtmlElement('setPos').addEventListener('click', () => {
 
 // Joue le screamer
 function screamer() {
-	screamerSound.volume = 0.5;
+	screamerSound.volume = 0.05;
 	screamerSound.play();
 	getHtmlElement('screamer').style.display = 'flex';
 	setTimeout(() => {
