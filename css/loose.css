@@ -1,0 +1,36 @@
+body{
+    background-color: black;
+}
+
+#ripImg{
+    width: 30%;
+}
+
+#ripPosition{
+    display: flex;
+    justify-content: center;
+    margin-top: 3%;
+}
+
+#perduText{
+    top: 80%;
+	left: 39%;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+	position: absolute;
+	color: rgb(255, 0, 0);
+	font-size: 90px;  
+}
+
+#buttonMenu{
+    top: 45%;
+	left: 38%;
+	text-align: center;
+	position: absolute;
+	color: rgb(0, 0, 0);
+	font-size: 75px; 
+
+}
+
+#buttonMenu:hover{
+    color: rgb(255, 255, 255);
+}
