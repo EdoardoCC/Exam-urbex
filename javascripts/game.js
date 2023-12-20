@@ -27,7 +27,12 @@ let VectorX = 1,
 	coffres = JSON.parse(localStorage.getItem('coffres')),
 	listJoueur = JSON.parse(localStorage.getItem('players')),
 	fantomeRalenti = false,
-	btnClick = new Audio('../assets/audios/click-button.mp3');
+	firstInteraction = false,
+	btnClick = new Audio('../assets/audios/click-button.mp3'),
+	backgroundSound = new Audio('../assets/audios/music_urbex.mp3'),
+	cleSound = new Audio('../assets/audios/ping.mp3'),
+	alarmSound = new Audio('../assets/audios/alarm.mp3'),
+	screamerSound = new Audio('../assets/audios/jumpscare.mp3');
 
 if (gameInfo.maxJoueur > 2) {
 	fausseCle = 4;
@@ -138,10 +143,12 @@ function checkDanger(fantomeX, fantomeY, attack) {
 		} else if (Math.abs(joueur.posX - fantomeX) < 10 && Math.abs(joueur.posY - fantomeY) < 10) {
 			getHtmlElement(joueur.id).classList.add('en-danger');
 			updatePlayerInfo(joueur, 5);
+			// alarmSound.play();
 		} else {
 			getHtmlElement(joueur.id).classList.remove('en-danger');
 			updatePlayersData(joueur.id, { key: 'canBeAttacked', value: true });
 			updatePlayerInfo(joueur, 0);
+			// alarmSound.pause();
 		}
 	});
 }
@@ -348,6 +355,12 @@ function loose() {
 
 function init() {
 	setTimeout(play, 10_000);
+	if (!firstInteraction) {
+		backgroundSound
+			.play()
+			.then(sound => (firstInteraction = true))
+			.catch(err => console.log('son non joué page recharger'));
+	}
 	createPlayerList();
 	getHtmlElement(listJoueur[gameInfo.tourDeJoueur - 1].id).classList.add('playing');
 	updatePlayerInfo(listJoueur[0], 0);
@@ -363,6 +376,10 @@ function init() {
 	}
 	// shuffle le tableau
 	listCle.sort((a, b) => 0.5 - Math.random());
+	alarmSound.volume = 0.05;
+	alarmSound.loop = true;
+	backgroundSound.loop = true;
+	
 }
 
 function openChest(x, y) {
@@ -387,19 +404,16 @@ function useCle(code) {
 		listJoueur[gameInfo.tourDeJoueur - 1].posX === 52
 	) {
 		if (!codeUsed(usedCodeCle, code) && code !== '') {
-			usedCodeCle.push(code.toUpperCase());
 			const pos = listCle.map(cle => cle.code).indexOf(code.toUpperCase());
 			if (pos !== -1) {
+				usedCodeCle.push(code.toUpperCase());
 				if (listCle[pos].type === 'vraiCle') {
 					window.location.href = '/pages/victoire.html';
 				} else {
-					getHtmlElement('screamer').style.display = 'flex';
-					gameInfo.nbTrap = gameInfo.nbTrap - 1;
-					updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
-					setTimeout(() => {
-						getHtmlElement('screamer').style.display = 'none';
-					}, 500);
+					screamer();
 				}
+			} else {
+				screamer();
 			}
 		}
 	}
@@ -432,14 +446,33 @@ getHtmlElement('setPos').addEventListener('click', () => {
 		{ key: 'posY', value: posY },
 	);
 	if (Math.random() > 0.7 && gameInfo.nbTrap > 0) {
-		getHtmlElement('screamer').style.display = 'flex';
+		screamer();
 		gameInfo.nbTrap = gameInfo.nbTrap - 1;
 		updateGameData({ key: 'nbTrap', value: gameInfo.nbTrap });
-		setTimeout(() => {
-			getHtmlElement('screamer').style.display = 'none';
-		}, 500);
+	}
+
+	/**  Suite à la réglementation de google chrome interdisant l'autoplay
+	 * voir https://developer.chrome.com/blog/autoplay?hl=fr
+	 * l'utilisateur doit intéragir une première fois avant de play le son
+	 * permet de fonctionner même suite a un reload avec un peut de temps entre.
+	 */
+	if (!firstInteraction) {
+		firstInteraction = true;
+		backgroundSound.play();
 	}
 });
+
+function screamer() {
+	screamerSound.volume = 0.5;
+	screamerSound.play();
+	getHtmlElement('screamer').style.display = 'flex';
+	setTimeout(() => {
+		getHtmlElement('screamer').style.display = 'none';
+	}, 1_000);
+	setTimeout(() => {
+		screamerSound.pause();
+	}, 3_000);
+}
 
 getHtmlElement('carte-btn').addEventListener('click', () => {
 	btnClick.play();
