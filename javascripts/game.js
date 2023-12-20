@@ -332,7 +332,7 @@ function check() {
 		!localStorage.getItem('players') ||
 		!localStorage.getItem('coffres')
 	)
-		window.location.href = '/';
+		window.location.href = '../';
 }
 
 function play() {
@@ -350,7 +350,7 @@ function pause(time) {
 function loose() {
 	clearInterval(fantomeMovingIntervalId);
 	clearInterval(fantomeTpIntervalId);
-	window.location.href = '/pages/loose.html';
+	window.location.href = './loose.html';
 }
 
 function init() {
@@ -408,7 +408,7 @@ function useCle(code) {
 			if (pos !== -1) {
 				usedCodeCle.push(code.toUpperCase());
 				if (listCle[pos].type === 'vraiCle') {
-					window.location.href = '/pages/victoire.html';
+					window.location.href = './victoire.html';
 				} else {
 					screamer();
 				}
